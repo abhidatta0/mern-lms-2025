@@ -7,10 +7,14 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { useState } from "react";
+import CommonForm from "@/components/common-form";
+import { signInFormControls, signUpFormControls } from "@/config";
 
 
 const AuthPage = () => {
-  const [activeTab, setActiveTab] = useState('signin')
+  const [activeTab, setActiveTab] = useState('signin');
+
+  const [formData, setFormData] = useState({});
   return (
     <div className="flex flex-col min-h-screen">
        <header className="px-4 lg:px-6 h-14 flex items-center border-b">
@@ -25,8 +29,18 @@ const AuthPage = () => {
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
-            <TabsContent value="signin">signin</TabsContent>
-            <TabsContent value="signup">signup</TabsContent>
+            <TabsContent value="signin">
+              <CommonForm buttonText="Submit" 
+              formControls={signInFormControls} formData={formData} setFormData={setFormData}
+              handleSubmit={(data)=> console.log(data)}
+              />
+            </TabsContent>
+            <TabsContent value="signup">
+              <CommonForm buttonText="Submit" 
+              formControls={signUpFormControls} formData={formData} setFormData={setFormData}
+              handleSubmit={(data)=> console.log(data)}
+              />
+            </TabsContent>
           </Tabs>
        </div>
     </div> 
