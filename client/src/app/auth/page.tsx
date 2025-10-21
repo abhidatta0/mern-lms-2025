@@ -21,7 +21,7 @@ const AuthPage = () => {
   const [activeTab, setActiveTab] = useState('signin');
 
 
-  const {signInFormData, signUpFormData, setSignInFormData, setSignUpFormData,handleRegisterUser} = useAuthContext();
+  const {signInFormData, signUpFormData, setSignInFormData, setSignUpFormData,handleRegisterUser, handleLoginUser} = useAuthContext();
 
   console.log({signInFormData});
 
@@ -55,7 +55,7 @@ const AuthPage = () => {
                 <CardContent>
                   <CommonForm buttonText="Sign In" 
                     formControls={signInFormControls} formData={signInFormData} setFormData={setSignInFormData}
-                    handleSubmit={(data)=> console.log(data)}
+                    handleSubmit={handleLoginUser}
                     isButtonDisabled={!checkIfSignInFormValid()}
                     />
                 </CardContent>
