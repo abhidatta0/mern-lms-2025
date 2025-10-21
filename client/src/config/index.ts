@@ -40,3 +40,14 @@ export const signInFormControls:FormControl[]  = [
     componentType: "input",
   },
 ];
+
+export const initialSignInFormData:Record<string,string> = {
+  userEmail: "",
+  password: "",
+};
+
+export const initialSignUpFormData:Record<string,string> = {
+  userName: "",
+  userEmail: "",
+  password: "",
+};

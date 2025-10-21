@@ -7,4 +7,4 @@ export type FormControl =  {
     options?:{id:string, label:string}[]
 }
 
-export type FormData = Record<string,string|number>;
+export type FormData = Record<string,string>;

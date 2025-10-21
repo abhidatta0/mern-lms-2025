@@ -9,12 +9,30 @@ import {
 import { useState } from "react";
 import CommonForm from "@/components/common-form";
 import { signInFormControls, signUpFormControls } from "@/config";
-
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { useAuthContext } from "./AuthContext";
 
 const AuthPage = () => {
   const [activeTab, setActiveTab] = useState('signin');
 
-  const [formData, setFormData] = useState({});
+
+  const {signInFormData, signUpFormData, setSignInFormData, setSignUpFormData} = useAuthContext();
+
+  console.log({signInFormData});
+
+  const checkIfSignInFormValid = ()=>{
+    return signInFormData && signInFormData.userEmail.trim() != '' && signInFormData.password.trim() != '';
+  }
+
+   const checkIfSignUpFormValid = ()=>{
+    return signUpFormData && signUpFormData.userName.trim() != '' && signUpFormData.userEmail.trim()  != '' && signUpFormData.password.trim() != '';
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
        <header className="px-4 lg:px-6 h-14 flex items-center border-b">
@@ -30,16 +48,34 @@ const AuthPage = () => {
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             <TabsContent value="signin">
-              <CommonForm buttonText="Submit" 
-              formControls={signInFormControls} formData={formData} setFormData={setFormData}
-              handleSubmit={(data)=> console.log(data)}
-              />
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sign In</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CommonForm buttonText="Sign In" 
+                    formControls={signInFormControls} formData={signInFormData} setFormData={setSignInFormData}
+                    handleSubmit={(data)=> console.log(data)}
+                    isButtonDisabled={!checkIfSignInFormValid()}
+                    />
+                </CardContent>
+              </Card>
+              
             </TabsContent>
             <TabsContent value="signup">
-              <CommonForm buttonText="Submit" 
-              formControls={signUpFormControls} formData={formData} setFormData={setFormData}
-              handleSubmit={(data)=> console.log(data)}
-              />
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sign Up</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CommonForm buttonText="Sign Up" 
+                  formControls={signUpFormControls} formData={signUpFormData} setFormData={setSignUpFormData}
+                  handleSubmit={(data)=> console.log(data)}
+                  isButtonDisabled={!checkIfSignUpFormValid()}
+                  />
+                </CardContent>
+              </Card>
+             
             </TabsContent>
           </Tabs>
        </div>
