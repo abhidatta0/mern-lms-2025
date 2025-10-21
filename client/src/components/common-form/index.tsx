@@ -5,7 +5,7 @@ import type { FormControl, FormData } from "./types";
 
 
 type Props = {
-  handleSubmit: (data: FormEvent<HTMLFormElement>)=> void,
+  handleSubmit: (event: FormEvent<HTMLFormElement>)=> void,
   buttonText: string,
   formControls: FormControl[],
   formData:FormData,
