@@ -23,8 +23,6 @@ const AuthPage = () => {
 
   const {signInFormData, signUpFormData, setSignInFormData, setSignUpFormData,handleRegisterUser, handleLoginUser} = useAuthContext();
 
-  console.log({signInFormData});
-
   const checkIfSignInFormValid = ()=>{
     return signInFormData && signInFormData.userEmail.trim() != '' && signInFormData.password.trim() != '';
   }

@@ -12,7 +12,8 @@ type AuthContextType = {
   setSignUpFormData:(val:typeof initialSignUpFormData)=> void,
   handleRegisterUser:(event:FormEvent<HTMLFormElement>)=> void,
   handleLoginUser:(event:FormEvent<HTMLFormElement>)=> void,
-  auth: {authenticated: boolean, user: User|null}
+  auth: {authenticated: boolean, user: User|null},
+  resetCredentials:()=> void,
 };
 export const AuthContext = createContext<AuthContextType|null>(null);
 
@@ -29,13 +30,11 @@ export default function AuthProvider({children}:Props){
   async function handleRegisterUser(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
     const data = await registerUser(signUpFormData);
-    console.log(data);
   }
 
   async function handleLoginUser(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
     const data = await loginUser(signInFormData);
-    console.log(data);
 
     if(data.success){
        sessionStorage.setItem('accessToken',data.data.accessToken);
@@ -49,6 +48,9 @@ export default function AuthProvider({children}:Props){
 
   }
 
+  function resetCredentials(){
+    setAuth({authenticated: false, user: null})
+  }
 
   async function checkAuthUser() {
     try{
@@ -76,7 +78,7 @@ export default function AuthProvider({children}:Props){
 
    return (
     <AuthContext value={{signInFormData,signUpFormData,setSignInFormData, setSignUpFormData,
-     handleRegisterUser,handleLoginUser,auth}}>
+     handleRegisterUser,handleLoginUser,auth, resetCredentials}}>
       {loading ? <Skeleton className="h-4 w-[250px]" /> :children}
     </AuthContext>
    )
