@@ -2,6 +2,8 @@ import { initialSignInFormData, initialSignUpFormData } from '@/config';
 import { registerUser, loginUser, checkAuth } from '@/services';
 import {createContext, useState,useContext, useEffect } from 'react';
 import type {FormEvent, ReactNode} from 'react';
+import type { User } from './types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type AuthContextType = {
   signInFormData: typeof initialSignInFormData,
@@ -10,6 +12,7 @@ type AuthContextType = {
   setSignUpFormData:(val:typeof initialSignUpFormData)=> void,
   handleRegisterUser:(event:FormEvent<HTMLFormElement>)=> void,
   handleLoginUser:(event:FormEvent<HTMLFormElement>)=> void,
+  auth: {authenticated: boolean, user: User|null}
 };
 export const AuthContext = createContext<AuthContextType|null>(null);
 
@@ -20,7 +23,8 @@ export default function AuthProvider({children}:Props){
   const [signInFormData, setSignInFormData] = useState(initialSignInFormData);
   const [signUpFormData, setSignUpFormData] = useState(initialSignUpFormData);
 
-  const [auth, setAuth] = useState({authenticate: false, user: null});
+  const [auth, setAuth] = useState({authenticated: false, user: null});
+  const [loading, setLoading] = useState(true);
 
   async function handleRegisterUser(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
@@ -36,25 +40,33 @@ export default function AuthProvider({children}:Props){
     if(data.success){
        sessionStorage.setItem('accessToken',data.data.accessToken);
        setAuth({
-        authenticate:true,
+        authenticated:true,
         user:data.data.user,
        })
     }else{
-      setAuth({authenticate: false, user: null})
+      setAuth({authenticated: false, user: null})
     }
+
   }
 
 
   async function checkAuthUser() {
-    const data = await checkAuth();
+    try{
+      const data = await checkAuth();
 
-    if(data.success){
-      setAuth({
-        authenticate:true,
-        user:data.data.user,
-       })
-    }else{
-      setAuth({authenticate: false, user: null})
+      if(data.success){
+        setAuth({
+          authenticated:true,
+          user:data.data.user,
+        })
+      }else{
+        setAuth({authenticated: false, user: null})
+      }
+    }catch(e){
+      console.error(e);
+      setAuth({authenticated: false, user: null})
+    }finally{
+      setLoading(false); 
     }
 
   }
@@ -64,8 +76,8 @@ export default function AuthProvider({children}:Props){
 
    return (
     <AuthContext value={{signInFormData,signUpFormData,setSignInFormData, setSignUpFormData,
-     handleRegisterUser,handleLoginUser}}>
-      {children}
+     handleRegisterUser,handleLoginUser,auth}}>
+      {loading ? <Skeleton className="h-4 w-[250px]" /> :children}
     </AuthContext>
    )
 }
