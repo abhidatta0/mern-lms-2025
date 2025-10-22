@@ -9,15 +9,15 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import type { FormControl, FormData } from "./types";
+import type { FormControl } from "./types";
 
 
-type Props = {
+type Props<T extends Record<string, string>> = {
     formControls:FormControl[],
-    formData:Record<string,string|number>,
-    setFormData:(obj:FormData)=> void,
+    formData:T,
+    setFormData:(obj:T)=> void,
 }
-function FormControls({ formControls, formData, setFormData }:Props) {
+function FormControls<T extends Record<string, string>>({ formControls, formData, setFormData }:Props<T>) {
   function renderComponentByType(controlItem:FormControl) {
     let element = null;
     const currentControlItemValue = formData[controlItem.name] || "";
