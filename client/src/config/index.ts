@@ -1,3 +1,4 @@
+import type { CourseCurriculumFormData } from "@/app/instructor/types";
 import type { FormControl } from "@/components/common-form/types";
 
 export const signUpFormControls:FormControl[] = [
@@ -148,6 +149,7 @@ export const courseLandingPageFormControls:FormControl[] = [
     name: "welcomeMessage",
     label: "Welcome Message",
     componentType: "textarea",
+    type:'text',
     placeholder: "Welcome message for students",
   },
 ];
@@ -165,7 +167,7 @@ export const courseLandingInitialFormData = {
   image: "",
 };
 
-export const courseCurriculumInitialFormData = [
+export const courseCurriculumInitialFormData:CourseCurriculumFormData[] = [
   {
     title: "",
     videoUrl: "",

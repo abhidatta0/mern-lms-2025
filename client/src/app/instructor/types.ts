@@ -10,3 +10,10 @@ export type CourseLandingFormData = {
     welcomeMessage: string;
     image: string;
 }
+
+export type CourseCurriculumFormData= {
+    title: string,
+    videoUrl: string,
+    freePreview: boolean,
+    public_id: string,
+};
