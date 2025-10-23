@@ -10,6 +10,8 @@ type InstructorContextType = {
   setCourseCurriculumFormData: (data:CourseCurriculumFormData[] )=> void,
   mediaUploadProgress: boolean,
   setMediaUploadProgress:(value: boolean)=> void,
+  mediaUploadProgressPercentage: number,
+  setMediaUploadProgressPercentage: (value: number)=> void,
 }
 
 export const InstructorContext = createContext<InstructorContextType|null>(null);
@@ -23,8 +25,10 @@ export default function InstructorProvider({children}:Props){
   const [courseCurriculumFormData, setCourseCurriculumFormData] = useState<CourseCurriculumFormData[]>(courseCurriculumInitialFormData);
 
   const [ mediaUploadProgress,setMediaUploadProgress] = useState(false);
+  const [ mediaUploadProgressPercentage,setMediaUploadProgressPercentage] = useState(0);
+
   return <InstructorContext value={{courseLandingFormData,setCourseLandingFormData, courseCurriculumFormData, setCourseCurriculumFormData,
-    mediaUploadProgress,setMediaUploadProgress,
+    mediaUploadProgress,setMediaUploadProgress,mediaUploadProgressPercentage, setMediaUploadProgressPercentage,
   }}>{children}</InstructorContext>
 }
 

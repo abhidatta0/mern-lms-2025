@@ -6,9 +6,10 @@ import { Switch } from "@/components/ui/switch";
 import { useInstructorContext } from "../../InstructorContext";
 import { courseCurriculumInitialFormData } from "@/config";
 import { mediaUploadService } from "@/services";
+import MediaProgressbar from "@/components/media-progress-bar";
 
 const CourseCurriculum = () => {
-  const {courseCurriculumFormData, setCourseCurriculumFormData, setMediaUploadProgress} = useInstructorContext();
+  const {courseCurriculumFormData, setCourseCurriculumFormData,mediaUploadProgress, setMediaUploadProgress,mediaUploadProgressPercentage,setMediaUploadProgressPercentage} = useInstructorContext();
 
   console.log({courseCurriculumFormData})
 
@@ -52,7 +53,7 @@ const CourseCurriculum = () => {
         setMediaUploadProgress(true);
         const response = await mediaUploadService(
           videoFormData,
-          // setMediaUploadProgressPercentage
+          setMediaUploadProgressPercentage
         );
         console.log({response});
         if (response.success) {
@@ -81,6 +82,9 @@ const CourseCurriculum = () => {
         >
           Add Lecture
         </Button>
+        {
+          mediaUploadProgress ? <MediaProgressbar isMediaUploading={mediaUploadProgress} progress={mediaUploadProgressPercentage}/> :  null
+        }
         
         <div className="mt-4 space-y-4">
           {courseCurriculumFormData.map((_, index) => (
