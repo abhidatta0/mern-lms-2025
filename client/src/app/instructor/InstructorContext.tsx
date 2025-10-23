@@ -8,6 +8,8 @@ type InstructorContextType = {
   setCourseLandingFormData: (data:CourseLandingFormData )=> void,
   courseCurriculumFormData: CourseCurriculumFormData[],
   setCourseCurriculumFormData: (data:CourseCurriculumFormData[] )=> void,
+  mediaUploadProgress: boolean,
+  setMediaUploadProgress:(value: boolean)=> void,
 }
 
 export const InstructorContext = createContext<InstructorContextType|null>(null);
@@ -20,7 +22,10 @@ export default function InstructorProvider({children}:Props){
   const [courseLandingFormData, setCourseLandingFormData] = useState<CourseLandingFormData>(courseLandingInitialFormData);
   const [courseCurriculumFormData, setCourseCurriculumFormData] = useState<CourseCurriculumFormData[]>(courseCurriculumInitialFormData);
 
-  return <InstructorContext value={{courseLandingFormData,setCourseLandingFormData, courseCurriculumFormData, setCourseCurriculumFormData}}>{children}</InstructorContext>
+  const [ mediaUploadProgress,setMediaUploadProgress] = useState(false);
+  return <InstructorContext value={{courseLandingFormData,setCourseLandingFormData, courseCurriculumFormData, setCourseCurriculumFormData,
+    mediaUploadProgress,setMediaUploadProgress,
+  }}>{children}</InstructorContext>
 }
 
 export const useInstructorContext = () => {

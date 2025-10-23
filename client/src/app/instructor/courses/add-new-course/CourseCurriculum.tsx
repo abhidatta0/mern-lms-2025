@@ -5,9 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useInstructorContext } from "../../InstructorContext";
 import { courseCurriculumInitialFormData } from "@/config";
+import { mediaUploadService } from "@/services";
 
 const CourseCurriculum = () => {
-  const {courseCurriculumFormData, setCourseCurriculumFormData} = useInstructorContext();
+  const {courseCurriculumFormData, setCourseCurriculumFormData, setMediaUploadProgress} = useInstructorContext();
 
   console.log({courseCurriculumFormData})
 
@@ -28,6 +29,46 @@ const CourseCurriculum = () => {
     }
 
     setCourseCurriculumFormData(copyCourseCurriculumFormData);
+  }
+
+  function handleFreePreviewChange(checked: boolean, index: number){
+    const copyCourseCurriculumFormData = [...courseCurriculumFormData];
+    copyCourseCurriculumFormData[index] = {
+      ...copyCourseCurriculumFormData[index],
+      freePreview: checked,
+    }
+
+    setCourseCurriculumFormData(copyCourseCurriculumFormData);
+  }
+
+   async function handleSingleLectureUpload(event:React.ChangeEvent<HTMLInputElement>, index:number) {
+    const selectedFile = event.target.files?.[0];
+
+    if (selectedFile) {
+      const videoFormData = new FormData();
+      videoFormData.append("file", selectedFile);
+
+      try {
+        setMediaUploadProgress(true);
+        const response = await mediaUploadService(
+          videoFormData,
+          // setMediaUploadProgressPercentage
+        );
+        console.log({response});
+        if (response.success) {
+          const cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+          cpyCourseCurriculumFormData[index] = {
+            ...cpyCourseCurriculumFormData[index],
+            videoUrl: response?.data?.url,
+            public_id: response?.data?.public_id,
+          };
+          setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+          setMediaUploadProgress(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
   return (
     <Card>
@@ -55,7 +96,7 @@ const CourseCurriculum = () => {
                 />
                 <div className="flex items-center space-x-2">
                   <Switch
-                    
+                    onCheckedChange={(value)=> handleFreePreviewChange(value, index)}
                     checked={courseCurriculumFormData[index].freePreview}
                     id={`freePreview-${index + 1}`}
                   />
@@ -68,6 +109,9 @@ const CourseCurriculum = () => {
                  <Input
                     type="file"
                     accept="video/*"
+                    onChange={(event) =>
+                      handleSingleLectureUpload(event, index)
+                    }
                     className="mb-4"
                   />
                 

@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/auth');
+const instructorRoutes = require('./routes/instructor');
 const port = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -35,6 +36,7 @@ app.use(express.json());
 mongoose.connect(MONGO_URI).then(()=> console.log("Mongodb connected")).catch(console.log)
 
 app.use("/auth",authRoutes);
+app.use("/media",instructorRoutes);
 
 app.use((err, req, res, next)=>{
     console.log(err.stack);
