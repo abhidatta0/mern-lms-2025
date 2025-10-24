@@ -7,11 +7,11 @@ import { useInstructorContext } from "../../InstructorContext";
 import { courseCurriculumInitialFormData } from "@/config";
 import { mediaUploadService } from "@/services";
 import MediaProgressbar from "@/components/media-progress-bar";
+import VideoPlayer from "@/components/video-player";
 
 const CourseCurriculum = () => {
   const {courseCurriculumFormData, setCourseCurriculumFormData,mediaUploadProgress, setMediaUploadProgress,mediaUploadProgressPercentage,setMediaUploadProgressPercentage} = useInstructorContext();
 
-  console.log({courseCurriculumFormData})
 
   function handleNewLecture(){
     setCourseCurriculumFormData([
@@ -55,7 +55,6 @@ const CourseCurriculum = () => {
           videoFormData,
           setMediaUploadProgressPercentage
         );
-        console.log({response});
         if (response.success) {
           const cpyCourseCurriculumFormData = [...courseCurriculumFormData];
           cpyCourseCurriculumFormData[index] = {
@@ -71,6 +70,12 @@ const CourseCurriculum = () => {
       }
     }
   }
+
+  function isCourseCurriculumFormDataValid(){
+    return courseCurriculumFormData.every(item=>{
+      return item && typeof item === 'object' && item.title.trim() !== '' && item.videoUrl.trim() !== ''
+    })
+  }
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
@@ -79,6 +84,7 @@ const CourseCurriculum = () => {
       <CardContent>
         <Button
           onClick={handleNewLecture}
+          disabled={!isCourseCurriculumFormDataValid() || mediaUploadProgress}
         >
           Add Lecture
         </Button>
@@ -110,7 +116,15 @@ const CourseCurriculum = () => {
                 </div>
               </div>
               <div className="mt-6">
-                 <Input
+                {
+                  courseCurriculumFormData[index].videoUrl ? <div className="flex gap-3">
+                    <VideoPlayer url={courseCurriculumFormData[index].videoUrl}
+                    width="450px"
+                    height="200px"
+                    />
+                    <Button>Replace Lecture</Button>
+                    <Button className="bg-red-900">Delete Lecture</Button>
+                  </div> : <Input
                     type="file"
                     accept="video/*"
                     onChange={(event) =>
@@ -118,6 +132,7 @@ const CourseCurriculum = () => {
                     }
                     className="mb-4"
                   />
+                }
                 
               </div>
 
