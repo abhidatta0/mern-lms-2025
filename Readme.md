@@ -1,1 +1,4 @@
 ### Mongodb project: https://cloud.mongodb.com/v2/68f621a0136c7104effa19f3#/overview
+
+## Techstack
+- Cloudinary (images/video assets)

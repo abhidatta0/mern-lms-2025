@@ -15,13 +15,14 @@ router.post('/upload', upload.single('file'), async (req, res)=>{
     }
 });
 
-router.delete('/delete/:id',  async (req, res)=>{
+router.post('/delete',  async (req, res)=>{
     try{
-     const {id} = req.params;
-     if(!id){
+     const {publicId} = req.body;
+     if(!publicId){
         return res.status(400).json({success: false, message:'Asset Id is required'})
      }
-     const result = await deleteMediaFromCloudinary(id);
+     const result = await deleteMediaFromCloudinary(publicId);
+     console.log({result})
       res.status(200).json({success: true, message: 'Asset deleted successfully'})
 
     }catch(e){
