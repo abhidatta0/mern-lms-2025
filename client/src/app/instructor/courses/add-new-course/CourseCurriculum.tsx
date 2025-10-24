@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useInstructorContext } from "../../InstructorContext";
 import { courseCurriculumInitialFormData } from "@/config";
-import { mediaUploadService } from "@/services";
+import { deleteSingleMedia, mediaUploadService } from "@/services";
 import MediaProgressbar from "@/components/media-progress-bar";
 import VideoPlayer from "@/components/video-player";
 
@@ -71,6 +71,36 @@ const CourseCurriculum = () => {
     }
   }
 
+  async function handleReplaceVideo(index:number){
+    const copyCourseCurriculumFormData = [...courseCurriculumFormData];
+    const toBeDeletePublicId = copyCourseCurriculumFormData[index].public_id;
+    const response = await deleteSingleMedia(toBeDeletePublicId);
+    if(response.success){
+      copyCourseCurriculumFormData[index] = {
+      ...copyCourseCurriculumFormData[index],
+      videoUrl: '',
+      public_id:'',
+    }
+
+    setCourseCurriculumFormData(copyCourseCurriculumFormData);
+    }
+  }
+
+  async function handleDeleteLecture(index:number) {
+    let copyCourseCurriculumFormData = [...courseCurriculumFormData];
+    const toBeDeletePublicId = copyCourseCurriculumFormData[index].public_id;
+
+    const response = await deleteSingleMedia(toBeDeletePublicId);
+
+    if (response?.success) {
+      copyCourseCurriculumFormData = copyCourseCurriculumFormData.filter(
+        (_, i) => index !== i
+      );
+
+      setCourseCurriculumFormData(copyCourseCurriculumFormData);
+    }
+  }
+
   function isCourseCurriculumFormDataValid(){
     return courseCurriculumFormData.every(item=>{
       return item && typeof item === 'object' && item.title.trim() !== '' && item.videoUrl.trim() !== ''
@@ -122,8 +152,8 @@ const CourseCurriculum = () => {
                     width="450px"
                     height="200px"
                     />
-                    <Button>Replace Lecture</Button>
-                    <Button className="bg-red-900">Delete Lecture</Button>
+                    <Button onClick={()=>handleReplaceVideo(index)}>Replace Lecture</Button>
+                    <Button className="bg-red-900" onClick={()=> handleDeleteLecture(index)}>Delete Lecture</Button>
                   </div> : <Input
                     type="file"
                     accept="video/*"

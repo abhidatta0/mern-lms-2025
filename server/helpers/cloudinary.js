@@ -20,7 +20,7 @@ const uploadMediaToCloudinary = async (filePath)=>{
 
 const deleteMediaFromCloudinary = async (publicId)=>{
     try{
-        const result = await cloudinary.uploader.destroy(publicId);
+        const result = await cloudinary.uploader.destroy(publicId,{invalidate:true});
         return result;
     }catch(error){
        console.log({error});
