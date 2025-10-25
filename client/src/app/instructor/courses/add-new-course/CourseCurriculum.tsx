@@ -89,16 +89,21 @@ const CourseCurriculum = () => {
   async function handleDeleteLecture(index:number) {
     let copyCourseCurriculumFormData = [...courseCurriculumFormData];
     const toBeDeletePublicId = copyCourseCurriculumFormData[index].public_id;
+    
+    if(toBeDeletePublicId){
+      const response = await deleteSingleMedia(toBeDeletePublicId);
 
-    const response = await deleteSingleMedia(toBeDeletePublicId);
-
-    if (response?.success) {
+      if (response?.success) {
+        copyCourseCurriculumFormData = copyCourseCurriculumFormData.filter(
+          (_, i) => index !== i
+        );
+      }
+    }else{
       copyCourseCurriculumFormData = copyCourseCurriculumFormData.filter(
-        (_, i) => index !== i
-      );
-
-      setCourseCurriculumFormData(copyCourseCurriculumFormData);
+          (_, i) => index !== i
+        );
     }
+      setCourseCurriculumFormData(copyCourseCurriculumFormData);
   }
 
   function isCourseCurriculumFormDataValid(){
@@ -134,15 +139,18 @@ const CourseCurriculum = () => {
                   onChange={(event)=> handleTitleChange(event, index)}
                   value={courseCurriculumFormData[index].title}
                 />
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    onCheckedChange={(value)=> handleFreePreviewChange(value, index)}
-                    checked={courseCurriculumFormData[index].freePreview}
-                    id={`freePreview-${index + 1}`}
-                  />
-                  <Label htmlFor={`freePreview-${index + 1}`}>
-                    Free Preview
-                  </Label>
+                <div className="flex items-center justify-between flex-1">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      onCheckedChange={(value)=> handleFreePreviewChange(value, index)}
+                      checked={courseCurriculumFormData[index].freePreview}
+                      id={`freePreview-${index + 1}`}
+                    />
+                    <Label htmlFor={`freePreview-${index + 1}`}>
+                      Free Preview
+                    </Label>
+                  </div>
+                  <Button className="bg-red-900" onClick={()=> handleDeleteLecture(index)}>Delete Lecture</Button>
                 </div>
               </div>
               <div className="mt-6">
@@ -153,7 +161,6 @@ const CourseCurriculum = () => {
                     height="200px"
                     />
                     <Button onClick={()=>handleReplaceVideo(index)}>Replace Lecture</Button>
-                    <Button className="bg-red-900" onClick={()=> handleDeleteLecture(index)}>Delete Lecture</Button>
                   </div> : <Input
                     type="file"
                     accept="video/*"

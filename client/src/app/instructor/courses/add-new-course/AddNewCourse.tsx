@@ -4,14 +4,58 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CourseCurriculum from "./CourseCurriculum";
 import CourseLanding from "./CourseLanding";
 import CourseSettings from "./CourseSettings";
+import { useInstructorContext } from "../../InstructorContext";
 
 const AddNewCourse = () => {
+  const {courseCurriculumFormData, courseLandingFormData} = useInstructorContext();
+
+  const isEmpty = (value:unknown)=>{
+    if(Array.isArray(value)){
+      return value.length === 0;
+    }
+
+    if(typeof value === 'string'){
+      console.log("string",{value})
+      return value.trim().length === 0;
+    }
+
+    return value === null || value === undefined
+
+  }
+  const validateFormData = ()=>{
+    // eslint-disable-next-line 
+    for (const [_, value]  of Object.entries(courseLandingFormData)) {
+      if (isEmpty(value)) {
+        return false;
+      }
+    }
+    console.log("here")
+     let hasFreePreview = false;
+
+    for (const item of courseCurriculumFormData) {
+      if (
+        isEmpty(item.title) ||
+        isEmpty(item.videoUrl) ||
+        isEmpty(item.public_id)
+      ) {
+        return false;
+      }
+
+      if (item.freePreview) {
+        hasFreePreview = true; //found at least one free preview
+      }
+    }
+
+
+    return hasFreePreview;
+
+  }
   return (
     <div className="mx-auto p-4"> 
     <div className="flex justify-between items-center">
         <h1 className="text-3xl font-extrabold mb-5">Create a new course</h1>
 
-        <Button className="text-sm tracking-wider font-bold px-8">Submit</Button>
+        <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8">Submit</Button>
     </div>
     <Card>
         <CardContent>
