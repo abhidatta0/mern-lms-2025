@@ -10,9 +10,28 @@ import {
 } from "@/components/ui/table";
 import { Delete, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { fetchInstructorCourseListService } from "@/services";
+import { useEffect, useState, useCallback } from "react"
+import { useUserDetails } from "@/app/auth/useUserDetails";
+import type { InstructorCourse } from "../types";
 
 const InstructorCourses = () => {
   const navigate = useNavigate();
+
+  const [coursesList, setCoursesList] = useState<InstructorCourse[]>([]);
+  const {_id} = useUserDetails();
+
+  const fetchAllCourses = useCallback(async  ()=>{
+    const response = await fetchInstructorCourseListService(_id);
+    console.log({response});
+    if(response.success){
+    setCoursesList(response.data);
+    }
+  },[_id]);
+
+  useEffect(()=>{
+    fetchAllCourses();
+  },[]);
 
 
   return (
@@ -33,19 +52,24 @@ const InstructorCourses = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">ReactJS full course</TableCell>
-                <TableCell>100</TableCell>
-                <TableCell>$150</TableCell>
-                <TableCell className="text-right">
-                  <Button variant='ghost' size='sm' className="mr-2">
-                    <Edit />
-                  </Button>
-                  <Button variant='ghost' size='sm'>
-                    <Delete />
-                  </Button>
-                </TableCell>
-              </TableRow>
+                {
+                  coursesList.map((course)=>(
+                    <TableRow key={course._id}>
+                      <TableCell className="font-medium">{course.title}</TableCell>
+                      <TableCell>${course.pricing}</TableCell>
+                      <TableCell>{Number(course.pricing)*course.students.length}</TableCell>
+                      <TableCell className="text-right">
+                        <Button variant='ghost' size='sm' className="mr-2">
+                          <Edit />
+                        </Button>
+                        <Button variant='ghost' size='sm'>
+                          <Delete />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                }
+                
             </TableBody>
           </Table>
         </div>

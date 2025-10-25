@@ -19,7 +19,8 @@ export type CourseCurriculumFormData= {
     public_id: string,
 };
 
-export type CreateCoursePayload = {
+export type InstructorCourse = {
+    _id: string,
     instructorId: string,
     instructorName: string,
     date: Date,
@@ -27,3 +28,5 @@ export type CreateCoursePayload = {
     curriculum: CourseCurriculumFormData[],
     isPublished: boolean,
 } & CourseLandingFormData;
+
+export type CreateCoursePayload = Omit<InstructorCourse,'_id'>;

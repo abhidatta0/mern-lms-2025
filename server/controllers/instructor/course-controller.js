@@ -22,8 +22,9 @@ const addNewCourse = async (req, res)=>{
 }
 
 const getAllCourses = async (req, res)=>{
+    const {instructorId} = req.params;
     try{
-      const coursesList = await Course.find({});
+      const coursesList = await Course.find({instructorId});
       res.status(200).json({
             success: true,
             data:coursesList,
