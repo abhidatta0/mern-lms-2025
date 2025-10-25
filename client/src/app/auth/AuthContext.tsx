@@ -15,6 +15,8 @@ type AuthContextType = {
   auth: {authenticated: boolean, user: User|null},
   resetCredentials:()=> void,
 };
+
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType|null>(null);
 
 export type Props = {
@@ -29,7 +31,7 @@ export default function AuthProvider({children}:Props){
 
   async function handleRegisterUser(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
-    const data = await registerUser(signUpFormData);
+    await registerUser(signUpFormData);
   }
 
   async function handleLoginUser(e:FormEvent<HTMLFormElement>){
@@ -84,6 +86,7 @@ export default function AuthProvider({children}:Props){
    )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = () => {
   const authContext = useContext(AuthContext);
 

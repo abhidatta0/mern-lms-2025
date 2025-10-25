@@ -5,9 +5,15 @@ import CourseCurriculum from "./CourseCurriculum";
 import CourseLanding from "./CourseLanding";
 import CourseSettings from "./CourseSettings";
 import { useInstructorContext } from "../../InstructorContext";
+import { addNewCourseService } from "@/services";
+import { courseLandingInitialFormData } from "@/config";
+import { useNavigate } from "react-router-dom";
+import { useUserDetails } from "@/app/auth/useUserDetails";
 
 const AddNewCourse = () => {
-  const {courseCurriculumFormData, courseLandingFormData} = useInstructorContext();
+  const {courseCurriculumFormData, courseLandingFormData, setCourseLandingFormData, setCourseCurriculumFormData} = useInstructorContext();
+  const user = useUserDetails();
+  const navigate = useNavigate();
 
   const isEmpty = (value:unknown)=>{
     if(Array.isArray(value)){
@@ -15,7 +21,6 @@ const AddNewCourse = () => {
     }
 
     if(typeof value === 'string'){
-      console.log("string",{value})
       return value.trim().length === 0;
     }
 
@@ -29,8 +34,7 @@ const AddNewCourse = () => {
         return false;
       }
     }
-    console.log("here")
-     let hasFreePreview = false;
+    let hasFreePreview = false;
 
     for (const item of courseCurriculumFormData) {
       if (
@@ -46,16 +50,34 @@ const AddNewCourse = () => {
       }
     }
 
-
     return hasFreePreview;
+  }
 
+  const handleCreateCourse = async ()=> {
+    const payload = {
+      instructorId: user._id,
+      instructorName: user.userName,
+      date: new Date(),
+      ...courseLandingFormData,
+      students:[],
+      curriculum: courseCurriculumFormData,
+      isPublished: true,
+    };
+
+    const response = await addNewCourseService(payload);
+    console.log({response})
+    if(response.success){
+      setCourseLandingFormData(courseLandingInitialFormData);
+      setCourseCurriculumFormData(courseCurriculumFormData);
+      navigate('/instructor');
+    }
   }
   return (
     <div className="mx-auto p-4"> 
     <div className="flex justify-between items-center">
         <h1 className="text-3xl font-extrabold mb-5">Create a new course</h1>
 
-        <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8">Submit</Button>
+        <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8" onClick={handleCreateCourse}>Submit</Button>
     </div>
     <Card>
         <CardContent>

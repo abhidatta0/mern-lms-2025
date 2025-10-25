@@ -1,4 +1,5 @@
 import axiosInstance from "@/api/axiosInstance";
+import type { CreateCoursePayload } from "@/app/instructor/types";
 import type { initialSignInFormData, initialSignUpFormData } from "@/config";
 
 export async function registerUser(formData: typeof initialSignUpFormData){
@@ -41,6 +42,20 @@ export async function deleteSingleMedia(publicId: string) {
   const { data } = await axiosInstance.post(`/media/delete`,{
     publicId,
   });
+
+  return data;
+}
+
+export async function addNewCourseService(formData:CreateCoursePayload) {
+  const { data } = await axiosInstance.post(`/instructor/course/add`, formData);
+
+  return data;
+}
+
+export async function fetchInstructorCourseDetailsService(id:string) {
+  const { data } = await axiosInstance.get(
+    `/instructor/course/get/details/${id}`
+  );
 
   return data;
 }

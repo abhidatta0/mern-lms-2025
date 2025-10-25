@@ -165,6 +165,7 @@ export const courseLandingInitialFormData = {
   objectives: "",
   welcomeMessage: "",
   image: "",
+  isPublished: true,
 };
 
 export const courseCurriculumInitialFormData:CourseCurriculumFormData[] = [

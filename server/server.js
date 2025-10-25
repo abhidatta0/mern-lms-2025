@@ -4,7 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/auth');
-const instructorRoutes = require('./routes/instructor');
+const instructorRoutes = require('./routes/instructor/media-routes');
+const instructorCourseRoutes = require('./routes/instructor/course-routes');
 const port = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -37,7 +38,7 @@ mongoose.connect(MONGO_URI).then(()=> console.log("Mongodb connected")).catch(co
 
 app.use("/auth",authRoutes);
 app.use("/media",instructorRoutes);
-
+app.use('/instructor/course',instructorCourseRoutes);
 app.use((err, req, res, next)=>{
     console.log(err.stack);
     res.status(500).json({

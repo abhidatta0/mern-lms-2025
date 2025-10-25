@@ -9,6 +9,7 @@ export type CourseLandingFormData = {
     objectives: string;
     welcomeMessage: string;
     image: string;
+    isPublished: boolean
 }
 
 export type CourseCurriculumFormData= {
@@ -17,3 +18,12 @@ export type CourseCurriculumFormData= {
     freePreview: boolean,
     public_id: string,
 };
+
+export type CreateCoursePayload = {
+    instructorId: string,
+    instructorName: string,
+    date: Date,
+    students:never[],
+    curriculum: CourseCurriculumFormData[],
+    isPublished: boolean,
+} & CourseLandingFormData;
