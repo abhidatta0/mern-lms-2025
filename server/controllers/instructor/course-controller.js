@@ -40,7 +40,7 @@ const getAllCourses = async (req, res)=>{
 
 const getCourseDetailsByID = async (req, res)=>{
     try{
-      const course = await Course.find({_id:req.params.id});
+      const course = await Course.findOne({_id:req.params.id});
       if(!course){
         return res.status(404).json({
             success: false,

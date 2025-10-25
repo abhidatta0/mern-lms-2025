@@ -59,7 +59,7 @@ const InstructorCourses = () => {
                       <TableCell>${course.pricing}</TableCell>
                       <TableCell>{Number(course.pricing)*course.students.length}</TableCell>
                       <TableCell className="text-right">
-                        <Button variant='ghost' size='sm' className="mr-2">
+                        <Button variant='ghost' size='sm' className="mr-2" onClick={()=> navigate(`edit-course/${course._id}`)}>
                           <Edit />
                         </Button>
                         <Button variant='ghost' size='sm'>

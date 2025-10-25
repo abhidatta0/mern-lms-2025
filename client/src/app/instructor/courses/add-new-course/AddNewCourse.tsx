@@ -5,15 +5,49 @@ import CourseCurriculum from "./CourseCurriculum";
 import CourseLanding from "./CourseLanding";
 import CourseSettings from "./CourseSettings";
 import { useInstructorContext } from "../../InstructorContext";
-import { addNewCourseService } from "@/services";
-import { courseLandingInitialFormData } from "@/config";
-import { useNavigate } from "react-router-dom";
+import { addNewCourseService, fetchInstructorCourseDetailsService } from "@/services";
+import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUserDetails } from "@/app/auth/useUserDetails";
+import { useEffect } from "react";
+import type { CourseLandingFormData } from "../../types";
 
 const AddNewCourse = () => {
   const {courseCurriculumFormData, courseLandingFormData, setCourseLandingFormData, setCourseCurriculumFormData} = useInstructorContext();
   const user = useUserDetails();
   const navigate = useNavigate();
+  const {courseId} = useParams();
+
+  async function fetchCourseDetails(courseId:string){
+   const response =await fetchInstructorCourseDetailsService(courseId);
+   console.log({response})
+
+   if(response.success && typeof response.data === 'object'){
+     const courseFormDataOfEdited = Object.entries(
+     courseLandingInitialFormData
+    ).reduce<CourseLandingFormData>((acc, [key, initialValue]) => {
+      const typedKey = key as keyof CourseLandingFormData;
+      // @ts-expect-error Ignore type check
+      acc[typedKey] = response.data[typedKey] ?? initialValue;
+      return acc;
+    }, {} as CourseLandingFormData);;
+
+    console.log({courseFormDataOfEdited})
+    setCourseLandingFormData(courseFormDataOfEdited);
+    setCourseCurriculumFormData(response.data.curriculum)
+   }
+  }
+
+  useEffect(()=>{
+    if(courseId){
+      fetchCourseDetails(courseId);
+    }
+
+    return ()=>{
+      setCourseLandingFormData(courseLandingInitialFormData);
+      setCourseCurriculumFormData(courseCurriculumInitialFormData);
+    }
+  },[]);
 
   const isEmpty = (value:unknown)=>{
     if(Array.isArray(value)){

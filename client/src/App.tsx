@@ -30,6 +30,12 @@ function App() {
       user={auth.user}
       />} />
 
+      <Route path="/instructor/edit-course/:courseId" element={<RouteGuard 
+      element={<AddNewCourse /> } 
+      authenticated={auth.authenticated}
+      user={auth.user}
+      />} />
+
       <Route path="/" element={<RouteGuard 
       element={<StudentViewCommonLayout /> } 
       authenticated={auth.authenticated}
