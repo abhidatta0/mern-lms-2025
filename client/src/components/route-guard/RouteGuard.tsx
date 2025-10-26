@@ -1,15 +1,12 @@
-import type { User } from "@/app/auth/types";
-import { Fragment, type ReactNode } from "react";
-import { Navigate, useLocation } from "react-router-dom"
+import { useAuthContext } from "@/app/auth/AuthContext";
+import { Navigate, useLocation, Outlet } from "react-router-dom"
 
-type Props = {
-  authenticated: boolean,
-  user: User|null,
-  element: ReactNode,
-}
-const RouteGuard = ({authenticated, user, element}:Props) => {
+const RouteGuard = () => {
 
   const location = useLocation();
+  const {auth} = useAuthContext();
+
+  const {authenticated, user} = auth;
 
 
   if(!authenticated && !location.pathname.includes('/auth')){
@@ -24,7 +21,7 @@ const RouteGuard = ({authenticated, user, element}:Props) => {
     return <Navigate to="/instructor" />
   }
   return (
-    <Fragment>{element}</Fragment>
+    <Outlet />
   )
 }
 export default RouteGuard

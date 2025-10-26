@@ -1,6 +1,18 @@
-const StudentHomePage = () => {
+import { useAuthContext } from "@/app/auth/AuthContext";
+import { Button } from "@/components/ui/button";
+
+const StudentViewCommonLayout = () => {
+  const {resetCredentials} = useAuthContext();
+
+   const handleLogout = ()=>{
+    resetCredentials();
+    sessionStorage.clear();
+  }
   return (
-    <div>StudentHomePage</div>
+    <div>StudentViewCommonLayout
+
+     <Button onClick={handleLogout}>Logout</Button>
+    </div>
   )
 }
-export default StudentHomePage;
+export default StudentViewCommonLayout
