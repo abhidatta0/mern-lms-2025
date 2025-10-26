@@ -22,7 +22,6 @@ const AddNewCourse = () => {
 
   async function fetchCourseDetails(courseId:string){
    const response =await fetchInstructorCourseDetailsService(courseId);
-   console.log({response})
 
    if(response.success && typeof response.data === 'object'){
      const courseFormDataOfEdited = Object.entries(
@@ -34,7 +33,6 @@ const AddNewCourse = () => {
       return acc;
     }, {} as CourseLandingFormData);;
 
-    console.log({courseFormDataOfEdited})
     setCourseLandingFormData(courseFormDataOfEdited);
     setCourseCurriculumFormData(response.data.curriculum)
    }
@@ -101,7 +99,6 @@ const AddNewCourse = () => {
     };
 
     const response = isEditing ? await editCourseService(courseId,payload) : await addNewCourseService(payload);
-    console.log({response})
     if(response.success){
       setCourseLandingFormData(courseLandingInitialFormData);
       setCourseCurriculumFormData(courseCurriculumFormData);
@@ -111,7 +108,7 @@ const AddNewCourse = () => {
   return (
     <div className="mx-auto p-4"> 
     <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-extrabold mb-5">Create a new course</h1>
+        <h1 className="text-3xl font-extrabold mb-5">{isEditing ? 'Edit' : 'Create a new'} course</h1>
 
         <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8" onClick={handleCreateCourse}>{isEditing ? 'Update Course' : 'Submit'}</Button>
     </div>

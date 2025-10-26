@@ -14,7 +14,6 @@ const CourseSettings = () => {
     } =
     useInstructorContext();
   
-  console.log({courseLandingFormData})
   async function handleImageUploadChange(event:React.ChangeEvent<HTMLInputElement>) {
     const selectedImage = event.target.files?.[0];
 
@@ -36,7 +35,7 @@ const CourseSettings = () => {
           setMediaUploadProgress(false);
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
   }

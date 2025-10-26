@@ -34,8 +34,6 @@ const InstructorDashboardRoot = () => {
     resetCredentials();
     sessionStorage.clear();
   }
-
-  console.log({activeTab})
   
   return (
     <div className="flex h-full min-h-screen bg-gray-100">

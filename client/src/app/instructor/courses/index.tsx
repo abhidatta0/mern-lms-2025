@@ -23,7 +23,6 @@ const InstructorCourses = () => {
 
   const fetchAllCourses = useCallback(async  ()=>{
     const response = await fetchInstructorCourseListService(_id);
-    console.log({response});
     if(response.success){
     setCoursesList(response.data);
     }
