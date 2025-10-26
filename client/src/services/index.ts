@@ -38,6 +38,18 @@ export async function mediaUploadService(formData:FormData, onProgressCallback:(
   return data;
 }
 
+export async function mediaBulkUploadService(formData:FormData, onProgressCallback:(completed: number)=> void) {
+  const { data } = await axiosInstance.post("/media/bulk-upload", formData,{
+    onUploadProgress:progressEvent=>{
+       const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / (progressEvent.total ?? 1)
+      );
+      onProgressCallback(percentCompleted); 
+    }
+  });
+
+  return data;
+}
 export async function deleteSingleMedia(publicId: string) {
   const { data } = await axiosInstance.post(`/media/delete`,{
     publicId,

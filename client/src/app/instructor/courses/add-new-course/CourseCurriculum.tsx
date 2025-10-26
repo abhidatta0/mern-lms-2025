@@ -9,12 +9,25 @@ import { deleteSingleMedia, mediaUploadService } from "@/services";
 import MediaProgressbar from "@/components/media-progress-bar";
 import VideoPlayer from "@/components/video-player";
 import { useParams } from "react-router-dom";
+import { useRef } from "react";
+import { Upload } from "lucide-react";
 
 const CourseCurriculum = () => {
   const {courseCurriculumFormData, setCourseCurriculumFormData,mediaUploadProgress, setMediaUploadProgress,mediaUploadProgressPercentage,setMediaUploadProgressPercentage} = useInstructorContext();
 
 
   const {courseId} = useParams();
+  const bulkUploadInputRef = useRef<HTMLInputElement>(null);
+
+  function handleOpenBulkUploadDialog() {
+    bulkUploadInputRef.current?.click();
+  }
+
+  async function handleMediaBulkUpload(event:React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files??[]);
+    console.log({files});
+  }
+
 
   const isEditing = !!courseId;  
   function handleNewLecture(){
@@ -117,8 +130,14 @@ const CourseCurriculum = () => {
   }
   return (
     <Card>
-      <CardHeader className="flex flex-row justify-between">
+      <CardHeader className="flex flex-row justify-between items-center">
         <CardTitle>{isEditing ? 'Update' : 'Create'} Course Curriculum</CardTitle>
+        <div>
+          <Input type="file" className="hidden" ref={bulkUploadInputRef} multiple accept="video/*" onChange={handleMediaBulkUpload}/>
+          
+          <Button onClick={handleOpenBulkUploadDialog}><Upload className="w-4 h-5 mr-2" />Bulk Upload</Button>
+
+        </div>
       </CardHeader>
       <CardContent>
         <Button
