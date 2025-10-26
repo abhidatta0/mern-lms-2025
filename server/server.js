@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/auth');
-const instructorRoutes = require('./routes/instructor/media-routes');
+const instructorMediaRoutes = require('./routes/instructor/media-routes');
 const instructorCourseRoutes = require('./routes/instructor/course-routes');
 const port = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
@@ -34,10 +34,25 @@ app.get('/test', (req, res) => {
 
 app.use(express.json());
 
-mongoose.connect(MONGO_URI).then(()=> console.log("Mongodb connected")).catch(console.log)
+(async function(){
+try {
+  console.log("Connecting with mongodb....")
+  await mongoose.connect(MONGO_URI);
+  console.log("MongoDB connected");
+    app.listen(port, (err)=>{
+        if(err){
+            console.error("Failed to start ",err);
+        }
+        console.log("Server started !!!");
+    })
+} catch (err) {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
+}
+})()
 
 app.use("/auth",authRoutes);
-app.use("/media",instructorRoutes);
+app.use("/media",instructorMediaRoutes);
 app.use('/instructor/course',instructorCourseRoutes);
 app.use((err, req, res, next)=>{
     console.log(err.stack);
@@ -47,9 +62,3 @@ app.use((err, req, res, next)=>{
     })
 })
 
-app.listen(port, (err)=>{
-    if(err){
-        console.error("Failed to start ",err);
-    }
-    console.log("Server started !!!");
-})

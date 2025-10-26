@@ -8,11 +8,15 @@ import { courseCurriculumInitialFormData } from "@/config";
 import { deleteSingleMedia, mediaUploadService } from "@/services";
 import MediaProgressbar from "@/components/media-progress-bar";
 import VideoPlayer from "@/components/video-player";
+import { useParams } from "react-router-dom";
 
 const CourseCurriculum = () => {
   const {courseCurriculumFormData, setCourseCurriculumFormData,mediaUploadProgress, setMediaUploadProgress,mediaUploadProgressPercentage,setMediaUploadProgressPercentage} = useInstructorContext();
 
 
+  const {courseId} = useParams();
+
+  const isEditing = !!courseId;  
   function handleNewLecture(){
     setCourseCurriculumFormData([
       ...courseCurriculumFormData,
@@ -114,7 +118,7 @@ const CourseCurriculum = () => {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
-        <CardTitle>Create Course Curriculum</CardTitle>
+        <CardTitle>{isEditing ? 'Update' : 'Create'} Course Curriculum</CardTitle>
       </CardHeader>
       <CardContent>
         <Button

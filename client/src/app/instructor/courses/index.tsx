@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Delete, Edit } from "lucide-react";
+import { CircleX, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { fetchInstructorCourseListService } from "@/services";
 import { useEffect, useState, useCallback } from "react"
@@ -62,8 +62,8 @@ const InstructorCourses = () => {
                         <Button variant='ghost' size='sm' className="mr-2" onClick={()=> navigate(`edit-course/${course._id}`)}>
                           <Edit />
                         </Button>
-                        <Button variant='ghost' size='sm'>
-                          <Delete />
+                        <Button variant='ghost' size='sm' className="text-red-500">
+                          <CircleX />
                         </Button>
                       </TableCell>
                     </TableRow>

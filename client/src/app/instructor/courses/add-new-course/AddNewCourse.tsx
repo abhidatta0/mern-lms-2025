@@ -5,7 +5,7 @@ import CourseCurriculum from "./CourseCurriculum";
 import CourseLanding from "./CourseLanding";
 import CourseSettings from "./CourseSettings";
 import { useInstructorContext } from "../../InstructorContext";
-import { addNewCourseService, fetchInstructorCourseDetailsService } from "@/services";
+import { addNewCourseService, editCourseService, fetchInstructorCourseDetailsService } from "@/services";
 import { courseCurriculumInitialFormData, courseLandingInitialFormData } from "@/config";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUserDetails } from "@/app/auth/useUserDetails";
@@ -17,6 +17,8 @@ const AddNewCourse = () => {
   const user = useUserDetails();
   const navigate = useNavigate();
   const {courseId} = useParams();
+
+  const isEditing = !!courseId;
 
   async function fetchCourseDetails(courseId:string){
    const response =await fetchInstructorCourseDetailsService(courseId);
@@ -39,7 +41,7 @@ const AddNewCourse = () => {
   }
 
   useEffect(()=>{
-    if(courseId){
+    if(isEditing){
       fetchCourseDetails(courseId);
     }
 
@@ -98,7 +100,7 @@ const AddNewCourse = () => {
       isPublished: true,
     };
 
-    const response = await addNewCourseService(payload);
+    const response = isEditing ? await editCourseService(courseId,payload) : await addNewCourseService(payload);
     console.log({response})
     if(response.success){
       setCourseLandingFormData(courseLandingInitialFormData);
@@ -111,7 +113,7 @@ const AddNewCourse = () => {
     <div className="flex justify-between items-center">
         <h1 className="text-3xl font-extrabold mb-5">Create a new course</h1>
 
-        <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8" onClick={handleCreateCourse}>Submit</Button>
+        <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8" onClick={handleCreateCourse}>{isEditing ? 'Update Course' : 'Submit'}</Button>
     </div>
     <Card>
         <CardContent>
