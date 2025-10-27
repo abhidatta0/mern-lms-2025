@@ -30,3 +30,11 @@ export type InstructorCourse = {
 } & CourseLandingFormData;
 
 export type CreateCoursePayload = Omit<InstructorCourse,'_id'>;
+
+export type CloudinarySingleMediaUploadResponse = {
+  resource_type: 'video'|'image',
+  rotation: number,
+  secure_url: string,
+  url: string,
+  public_id:string,
+}

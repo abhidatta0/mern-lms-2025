@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useInstructorContext } from "../../InstructorContext";
 import { courseCurriculumInitialFormData } from "@/config";
-import { deleteSingleMedia, mediaUploadService } from "@/services";
+import { deleteSingleMedia, mediaBulkUploadService, mediaUploadService } from "@/services";
 import MediaProgressbar from "@/components/media-progress-bar";
 import VideoPlayer from "@/components/video-player";
 import { useParams } from "react-router-dom";
 import { useRef } from "react";
 import { Upload } from "lucide-react";
+import type { CloudinarySingleMediaUploadResponse } from "../../types";
 
 const CourseCurriculum = () => {
   const {courseCurriculumFormData, setCourseCurriculumFormData,mediaUploadProgress, setMediaUploadProgress,mediaUploadProgressPercentage,setMediaUploadProgressPercentage} = useInstructorContext();
@@ -26,6 +27,33 @@ const CourseCurriculum = () => {
   async function handleMediaBulkUpload(event:React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files??[]);
     console.log({files});
+    const formData = new FormData();
+    files.forEach((fileItem)=> formData.append('files',fileItem));
+
+    try{
+      setMediaUploadProgress(true);
+      const response:{success:boolean, data: CloudinarySingleMediaUploadResponse[]} = await mediaBulkUploadService(formData, setMediaUploadProgressPercentage);
+      console.log({response});
+      if(response.success && response.data.length === files.length){
+        console.log("proceed")
+        const copyCourseCurriculumFormData = [...courseCurriculumFormData];
+
+        response.data.forEach((item)=>{
+          copyCourseCurriculumFormData.push({
+          ...courseCurriculumInitialFormData[0],
+          public_id: item.public_id,
+          videoUrl: item.url,
+        })});
+
+        console.log({copyCourseCurriculumFormData})
+        
+        setCourseCurriculumFormData(copyCourseCurriculumFormData);
+      }
+    }catch(e){
+      console.error(e);
+    }finally{
+      setMediaUploadProgress(false);
+    }
   }
 
 
