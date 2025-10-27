@@ -14,6 +14,7 @@ type AuthContextType = {
   handleLoginUser:(event:FormEvent<HTMLFormElement>)=> void,
   auth: {authenticated: boolean, user: User|null},
   resetCredentials:()=> void,
+  handleLogout:()=> void,
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -29,9 +30,15 @@ export default function AuthProvider({children}:Props){
   const [auth, setAuth] = useState({authenticated: false, user: null});
   const [loading, setLoading] = useState(true);
 
+  const clearAfterLogin= ()=>{
+    setSignInFormData(initialSignInFormData);
+    setSignUpFormData(initialSignUpFormData);
+  }
+
   async function handleRegisterUser(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
     await registerUser(signUpFormData);
+    clearAfterLogin();
   }
 
   async function handleLoginUser(e:FormEvent<HTMLFormElement>){
@@ -47,6 +54,7 @@ export default function AuthProvider({children}:Props){
     }else{
       setAuth({authenticated: false, user: null})
     }
+    clearAfterLogin();
 
   }
 
@@ -78,9 +86,14 @@ export default function AuthProvider({children}:Props){
     checkAuthUser()
   },[]);
 
+  function handleLogout() {
+    resetCredentials();
+    sessionStorage.clear();
+  }
+
    return (
     <AuthContext value={{signInFormData,signUpFormData,setSignInFormData, setSignUpFormData,
-     handleRegisterUser,handleLoginUser,auth, resetCredentials}}>
+     handleRegisterUser,handleLoginUser,auth, resetCredentials, handleLogout}}>
       {loading ? <Skeleton className="h-4 w-[250px]" /> :children}
     </AuthContext>
    )
