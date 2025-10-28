@@ -7,6 +7,7 @@ import AddNewCourse from "./app/instructor/courses/add-new-course/AddNewCourse";
 import InstructorDashboardRoot from "./app/instructor/page";
 import CoursesListPage from "./app/student/courses/CoursesListPage";
 import Home from "./app/student/home/Home";
+import CourseDetails from "./app/student/course-details/CourseDetails";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/"  Component={StudentHomePage} >
            <Route path="home"  Component={Home} />
            <Route path="courses" Component={CoursesListPage} />
+           <Route path="course/details/:id" Component={CourseDetails} />
         </Route>
         <Route path="auth" Component={AuthPage}/>
         <Route path="instructor">

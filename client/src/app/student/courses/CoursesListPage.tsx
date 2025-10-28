@@ -15,7 +15,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { fetchStudentViewCourseListService } from "@/services";
 import { useSearchParams } from "react-router-dom";
-
+import { Skeleton } from "@/components/ui/skeleton";
+import {useNavigate} from 'react-router-dom';
 
 const createQueryStringForFilters = (filters:Record<string,string[]>)=>{
   const queryParams = [];
@@ -29,19 +30,22 @@ const createQueryStringForFilters = (filters:Record<string,string[]>)=>{
   return queryParams.join('&');
 }
 const CoursesListPage = () => {
+  const navigate = useNavigate();
   const [sort, setSort] = useState(sortOptions[0].id);
   const [filters, setFilters] = useState<Record<string,string[]>>({});
-  const [searchParams, setSearchParams] = useSearchParams();
+  const setSearchParams = useSearchParams()[1];
 
-  const {studentViewCoursesList, setStudentViewCoursesList} = useStudentContext();
+  const {studentViewCoursesList, setStudentViewCoursesList, isLoading, setIsLoading} = useStudentContext();
 
   async function fetchAllStudentViewCourses() {
     const query = new URLSearchParams({
       ...filters,
       sortBy: sort,
     })
+    setIsLoading(true);
     const response = await fetchStudentViewCourseListService(query);
     if (response?.success) setStudentViewCoursesList(response.data);
+    setIsLoading(false);
   }
 
   useEffect(()=>{
@@ -144,6 +148,7 @@ const CoursesListPage = () => {
                 <Card
                   className="cursor-pointer"
                   key={courseItem._id}
+                  onClick={()=> navigate(`/course/details/${courseItem._id}`)}
                 >
                   <CardContent className="flex gap-4 p-4">
                     <div className="w-48 h-32 flex-shrink-0">
@@ -176,7 +181,7 @@ const CoursesListPage = () => {
                   </CardContent>
                 </Card>
               ))
-            ) : (
+            ) : isLoading ? <Skeleton className="w-full h-[250px]"/> : (
               <h1 className="font-extrabold text-4xl">No Courses Found</h1>
             )}
           </div>

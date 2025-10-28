@@ -5,6 +5,8 @@ import type { InstructorCourse } from '../instructor/types';
 type StudentContextType = {
     studentViewCoursesList:InstructorCourse[],
     setStudentViewCoursesList:(studentViewCoursesList:InstructorCourse[])=>void,
+    isLoading: boolean,
+    setIsLoading:(val: boolean)=> void,
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -16,9 +18,10 @@ export type Props = {
 export default function StudentProvider({children}:Props){
 
   const [studentViewCoursesList, setStudentViewCoursesList] = useState<InstructorCourse[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
    return (
-    <StudentContext value={{studentViewCoursesList,setStudentViewCoursesList}}>
+    <StudentContext value={{studentViewCoursesList,setStudentViewCoursesList, isLoading,setIsLoading}}>
         {children}
     </StudentContext>
    )

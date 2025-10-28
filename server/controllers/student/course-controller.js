@@ -57,7 +57,7 @@ const getStudentViewCourseDetails = async (req, res)=>{
         })
      }
      res.status(200).json({
-        success: false,
+        success: true,
         data:course
      })
     }catch(e){
