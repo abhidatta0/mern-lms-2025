@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/axiosInstance";
 import type { CreateCoursePayload } from "@/app/instructor/types";
+import type { Order } from "@/app/student/types";
 import type { initialSignInFormData, initialSignUpFormData } from "@/config";
 
 export async function registerUser(formData: typeof initialSignUpFormData){
@@ -94,5 +95,25 @@ export async function fetchStudentViewCourseListService(query: URLSearchParams) 
 
 export async function fetchStudentViewCourseDetailsService(id:string) {
   const { data } = await axiosInstance.get(`/student/course/get/details/${id}`);
+  return data;
+}
+
+export async function createPaymentService(payload: Order) {
+  const { data } = await axiosInstance.post(`/student/order/create`, payload);
+
+  return data;
+}
+
+export async function captureAndFinalizePaymentService(
+  paymentId:string,
+  payerId:string,
+  orderId:string
+) {
+  const { data } = await axiosInstance.post(`/student/order/capture`, {
+    paymentId,
+    payerId,
+    orderId,
+  });
+
   return data;
 }

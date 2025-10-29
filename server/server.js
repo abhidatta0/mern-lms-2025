@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const instructorMediaRoutes = require('./routes/instructor/media-routes');
 const instructorCourseRoutes = require('./routes/instructor/course-routes');
 const studentCourseRoutes = require('./routes/student/course-routes');
+const studentOrderRoutes = require('./routes/student/order-routes');
 
 const port = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
@@ -57,6 +58,7 @@ app.use("/auth",authRoutes);
 app.use("/media",instructorMediaRoutes);
 app.use('/instructor/course',instructorCourseRoutes);
 app.use('/student/course',studentCourseRoutes);
+app.use('/student/order',studentOrderRoutes);
 
 app.use((err, req, res, next)=>{
     console.log(err.stack);

@@ -16,6 +16,7 @@ const createOrder = async (req, res) => {
         payerId,
         instructorId,
         courseId,
+        coursePricing,
     } = req.body;
 
     const random = Math.floor(Math.random()*(3)+1);  // between 1 and 3
@@ -30,7 +31,8 @@ const createOrder = async (req, res) => {
       paymentId,
       payerId,
       instructorId,
-      courseId
+      courseId,
+      coursePricing
       });
       await newlyCreatedOrder.save();
       res.status(201).json({
@@ -53,7 +55,9 @@ const createOrder = async (req, res) => {
 const capturePaymentAndFinalizeOrder = async (req, res) => {
   try {
     const {paymentId, payerId, orderId} = req.body;
-    let order = await Order.findOne(orderId);
+    let order = await Order.findOne({_id:orderId});
+
+    console.log("in capturePaymentAndFinalizeOrder")
 
     if (!order) {
       return res.status(404).json({
@@ -73,6 +77,8 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
     const studentCourses = await StudentCourses.findOne({
       userId: order.userId,
     });
+
+    console.log({studentCourses});
 
     const studentCourseObject = {
       courseId: order.courseId,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useStudentContext } from "../StudentContext";
-import { fetchStudentViewCourseDetailsService } from "@/services";
+import { createPaymentService, fetchStudentViewCourseDetailsService } from "@/services";
 import { type CourseCurriculumFormData, type InstructorCourse } from "@/app/instructor/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,23 @@ import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import VideoPlayer from "@/components/video-player";
 import { languageOptions } from "@/config";
 import { Button } from "@/components/ui/button";
+import { useUserDetails } from "@/app/auth/useUserDetails";
+import type { Order } from "../types";
+import { Spinner } from "@/components/ui/spinner"
+
+// Generate a random payment ID
+function generatePaymentId() {
+  const timestamp = Date.now();
+  const random = Math.floor(Math.random() * 10000);
+  return `PAY_${timestamp}_${random}`;
+}
+
+// Generate a random payer object
+function generatePayerId() {
+
+  return `PAYER_${Math.floor(Math.random() * 100000)}`
+  
+}
 
 const CourseDetails = () => {
   const {id} = useParams();
@@ -25,9 +42,12 @@ const CourseDetails = () => {
   const [courseDetails, setCourseDetails] = useState<InstructorCourse|null>(null);
 
   const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
 
   const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] =
     useState<CourseCurriculumFormData['videoUrl']|null>(null);
+
+  const {_id, } = useUserDetails();
 
   async function fetchDetails() {
     if(id){
@@ -53,7 +73,7 @@ const CourseDetails = () => {
     return <p className="leading-2 text-center p-4">No details found</p>
   }
 
-    const getIndexOfFreePreviewUrl = courseDetails.curriculum.findIndex(
+  const getIndexOfFreePreviewUrl = courseDetails.curriculum.findIndex(
           (item) => item.freePreview
         ) ?? -1;
 
@@ -61,6 +81,41 @@ const CourseDetails = () => {
    setDisplayCurrentVideoFreePreview(curriculumItem.videoUrl);
    setShowFreePreviewDialog(true);
   } 
+
+  const handleCreatePayment = async ()=>{
+    const payload:Order = {
+      userId:_id,
+      orderStatus:'pending',
+      paymentMethod:'razorpay', // dummy payment !
+      paymentStatus:'initiated',
+      orderDate: new Date(),
+      paymentId:'',
+      payerId:'',
+      instructorId: courseDetails.instructorId,
+      courseId: courseDetails._id,
+      coursePricing: courseDetails.pricing,  // enhance : different pricing due to discount
+    };
+
+    setIsPaying(true);
+    /* Here, I am making a dummy payment call.
+     I call razorpay api internally via server and server will redirect to razoprpay page,
+     once successfully I will be redirected to /payment-return which will further complete the course buy
+    */
+    const response = await createPaymentService(payload);
+    if(response.success){
+      sessionStorage.setItem('currentOrderId',JSON.stringify(response.data.orderId));
+      const paymentId=generatePaymentId();
+      const payerId=generatePayerId();
+
+      // redirect
+      const url = new URL(`${window.origin}/payment-return`);
+      url.searchParams.append('paymentId', paymentId);
+      url.searchParams.append('payerId', payerId);
+      window.location.href = url.toString();
+    }
+    setIsPaying(false);
+
+  }
 
 
   return (
@@ -160,7 +215,10 @@ const CourseDetails = () => {
                 </span>
               </div>
               <Button 
+              onClick={handleCreatePayment}
+              disabled={isPaying}
               className="w-full">
+                {isPaying && <Spinner />}
                 Buy Now
               </Button>
             </CardContent>
