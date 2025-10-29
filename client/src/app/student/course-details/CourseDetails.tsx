@@ -2,18 +2,32 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useStudentContext } from "../StudentContext";
 import { fetchStudentViewCourseDetailsService } from "@/services";
-import type { InstructorCourse } from "@/app/instructor/types";
+import { type CourseCurriculumFormData, type InstructorCourse } from "@/app/instructor/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { CheckCircle, Globe, Lock, PlayCircle } from "lucide-react";
 import VideoPlayer from "@/components/video-player";
 import { languageOptions } from "@/config";
+import { Button } from "@/components/ui/button";
 
 const CourseDetails = () => {
   const {id} = useParams();
   const {setIsLoading, isLoading} = useStudentContext();
 
   const [courseDetails, setCourseDetails] = useState<InstructorCourse|null>(null);
+
+  const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
+
+  const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] =
+    useState<CourseCurriculumFormData['videoUrl']|null>(null);
 
   async function fetchDetails() {
     if(id){
@@ -42,6 +56,11 @@ const CourseDetails = () => {
     const getIndexOfFreePreviewUrl = courseDetails.curriculum.findIndex(
           (item) => item.freePreview
         ) ?? -1;
+
+  const handleSetFreePreview = (curriculumItem: CourseCurriculumFormData)=>{
+   setDisplayCurrentVideoFreePreview(curriculumItem.videoUrl);
+   setShowFreePreviewDialog(true);
+  } 
 
 
   return (
@@ -104,6 +123,7 @@ const CourseDetails = () => {
                         ? "cursor-pointer"
                         : "cursor-not-allowed"
                     } flex items-center mb-4`}
+                    onClick={curriculumItem.freePreview ? ()=> handleSetFreePreview(curriculumItem): undefined}
                     key={index}
                   >
                     {curriculumItem.freePreview ? (
@@ -139,10 +159,35 @@ const CourseDetails = () => {
                   ${courseDetails.pricing}
                 </span>
               </div>
+              <Button 
+              className="w-full">
+                Buy Now
+              </Button>
             </CardContent>
           </Card>
         </aside>
       </div>
+      <Dialog open={showFreePreviewDialog} onOpenChange={setShowFreePreviewDialog}>
+      <DialogContent className="sm:max-w-md" aria-describedby="">
+        <DialogHeader>
+          <DialogTitle>Course Preview</DialogTitle>
+        </DialogHeader>
+        <div>
+          <VideoPlayer
+            url={displayCurrentVideoFreePreview??''}
+            width="100%"
+            height="200px"
+          />
+        </div>
+        <DialogFooter className="sm:justify-start">
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">
+              Close
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
       </div>
   )
 }
