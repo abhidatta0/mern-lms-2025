@@ -21,11 +21,10 @@ const CourseSchema = new mongoose.Schema({
   objectives: String,
   welcomeMessage: String,
   image: String,
-  students:[
+  students:[  // this is to keep track of how many students bought the course
     {
-        studentId: String,
-        studentName: String,
-        studentEmail: String,
+      studentId: String,
+      paidAmount: String,
     }
   ],
   curriculum: [LectureSchema],
