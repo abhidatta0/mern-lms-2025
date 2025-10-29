@@ -201,7 +201,7 @@ const CourseCurriculum = () => {
                       Free Preview
                     </Label>
                   </div>
-                  <Button className="bg-red-900" onClick={()=> handleDeleteLecture(index)}>Delete Lecture</Button>
+                  <Button variant='destructive' onClick={()=> handleDeleteLecture(index)}>Delete Lecture</Button>
                 </div>
               </div>
               <div className="mt-6">

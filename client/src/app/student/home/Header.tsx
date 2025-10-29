@@ -1,6 +1,6 @@
 import { useAuthContext } from "@/app/auth/AuthContext";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, TvMinimalPlay } from "lucide-react";
+import { TvMinimalPlay } from "lucide-react";
 import { Link, useNavigate , useLocation} from "react-router-dom";
 
 const Header = () => {
@@ -13,9 +13,9 @@ const Header = () => {
     <header className="flex items-center justify-between p-4 border">
         <div className="flex items-center space-x-4">
         <Link to="/home" className="flex items-center hover:text-black">
-          <GraduationCap className="h-8 w-8 mr-4 " />
+          <img src="/images/app-logo.png" className="h-8 w-8 mr-4 "/>
           <span className="font-extrabold md:text-xl text-[14px]">
-            LMS LEARN
+           E-tutor
           </span>
         </Link>
         <div className="flex items-center space-x-1">
