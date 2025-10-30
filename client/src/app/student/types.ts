@@ -10,3 +10,10 @@ export type Order = {
   courseId: string,
   coursePricing: string,
 }
+
+export type BoughtCourseInfo = {
+  "courseId": string,
+  "instructorId": string,
+  "dateOfPurchase": Date,
+  "_id": string,
+}

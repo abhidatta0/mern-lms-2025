@@ -117,3 +117,8 @@ export async function captureAndFinalizePaymentService(
 
   return data;
 }
+
+export async function fetchMyCourses(id:string) {
+  const { data } = await axiosInstance.get(`/student/course/get/mycourses/${id}`);
+  return data;
+}

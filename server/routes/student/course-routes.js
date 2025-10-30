@@ -1,10 +1,12 @@
 const express = require('express');
-const { getAllStudentViewCourses, getStudentViewCourseDetails } = require('../../controllers/student/course-controller');
+const { getAllStudentViewCourses, getStudentViewCourseDetails, getCoursesByStudentId } = require('../../controllers/student/course-controller');
 
 const router = express.Router();
 
 router.get('/get', getAllStudentViewCourses);
 router.get('/get/details/:id', getStudentViewCourseDetails);
+
+router.get('/get/mycourses/:studentId', getCoursesByStudentId);
 
 
 module.exports = router;

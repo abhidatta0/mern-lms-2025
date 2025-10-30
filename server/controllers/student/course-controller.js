@@ -1,4 +1,5 @@
 const Course = require('../../models/Course');
+const StudentCourse = require('../../models/StudentCourses');
 
 
 const getAllStudentViewCourses = async (req, res)=>{
@@ -69,4 +70,22 @@ const getStudentViewCourseDetails = async (req, res)=>{
     }
 }
 
-module.exports = {getAllStudentViewCourses, getStudentViewCourseDetails};
+const getCoursesByStudentId = async (req, res)=>{
+    try{
+      const {studentId} = req.params;
+      const studentBoughtCourses = await StudentCourse.findOne({userId: studentId});
+      res.status(200).json({
+        success: true,
+        data:studentBoughtCourses?.courses || [],
+      })
+    }catch(e){
+        console.error(e);
+        res.status(500).json({
+            success: false,
+            message: 'Some error occured!'
+        })
+    }
+}
+
+
+module.exports = {getAllStudentViewCourses, getStudentViewCourseDetails,getCoursesByStudentId};
