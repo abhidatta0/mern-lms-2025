@@ -1,4 +1,5 @@
 const Course = require('../../models/Course');
+const StudentCourses = require('../../models/StudentCourses');
 const StudentCourse = require('../../models/StudentCourses');
 
 
@@ -49,7 +50,7 @@ const getAllStudentViewCourses = async (req, res)=>{
 
 const getStudentViewCourseDetails = async (req, res)=>{
     try{
-     const {id} = req.params;
+     const {id, studentId} = req.params;
      const course = await Course.findOne({_id:id});
      if(!course){
         res.status(200).json({
@@ -57,9 +58,21 @@ const getStudentViewCourseDetails = async (req, res)=>{
             message: 'No course found',
         })
      }
+
+     // check if current student purchased this course or not
+     const studentCourse  = await StudentCourses.findOne({
+       userId: studentId,
+     });
+
+     console.log({studentCourse, ind: studentCourse.courses.findIndex(item => item.courseId === id)})
+
+     const isCoursePurchased = !!studentCourse && (studentCourse.courses.findIndex(item => item.courseId === id) !== -1)
+
+     console.log({isCoursePurchased})
      res.status(200).json({
         success: true,
-        data:course
+        data:course,
+        isCoursePurchased,
      })
     }catch(e){
         console.error(e);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useStudentContext } from "../StudentContext";
 import { createPaymentService, fetchStudentViewCourseDetailsService } from "@/services";
 import { type CourseCurriculumFormData, type InstructorCourse } from "@/app/instructor/types";
@@ -43,6 +43,9 @@ const CourseDetails = () => {
 
   const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
+  const user = useUserDetails();
+
+  const navigate = useNavigate();
 
   const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] =
     useState<CourseCurriculumFormData['videoUrl']|null>(null);
@@ -52,8 +55,13 @@ const CourseDetails = () => {
   async function fetchDetails() {
     if(id){
         setIsLoading(true);
-        const response = await fetchStudentViewCourseDetailsService(id);
-        if (response.success) setCourseDetails(response.data);
+        const response = await fetchStudentViewCourseDetailsService(id, user._id);
+        if (response.success) { 
+          setCourseDetails(response.data);
+          if(response.isCoursePurchased){
+            navigate(`/course-progress/${id}`)
+          }
+        };
         setIsLoading(false);
     }
   }

@@ -69,6 +69,13 @@ const MyCoursesList = () => {
                 <p className="text-sm text-gray-700 mb-2">
                   {getCourseInfoById(course.courseId)?.instructorName??''}
                 </p>
+                <p className="text-sm text-gray-700 mb-2">
+                  {getCourseInfoById(course.courseId)?.curriculum.length??'0' } lectures
+                </p>
+                <p className="text-sm text-gray-700 mb-2">
+                  <span className="font-bold">Purchased on:</span> {new Date(course.dateOfPurchase).toLocaleDateString()}
+                </p>
+
               </CardContent>
               <CardFooter>
                 <Button

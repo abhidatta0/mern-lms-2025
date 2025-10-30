@@ -10,6 +10,7 @@ import Home from "./app/student/home/Home";
 import CourseDetails from "./app/student/course-details/CourseDetails";
 import PaymentReturn from "./app/student/payment/PaymentReturn";
 import MyCoursesList from "./app/student/courses/MyCoursesList";
+import CourseProgress from "./app/student/course-progress/CourseProgress";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
            <Route path="course/details/:id" Component={CourseDetails} />
            <Route path="payment-return" Component={PaymentReturn} />
            <Route path="student-courses" Component={MyCoursesList} />
+           <Route path="course-progress/:id" Component={CourseProgress} />
         </Route>
         <Route path="auth" Component={AuthPage}/>
         <Route path="instructor">

@@ -4,7 +4,7 @@ const { getAllStudentViewCourses, getStudentViewCourseDetails, getCoursesByStude
 const router = express.Router();
 
 router.get('/get', getAllStudentViewCourses);
-router.get('/get/details/:id', getStudentViewCourseDetails);
+router.get('/get/details/:id/:studentId', getStudentViewCourseDetails);
 
 router.get('/get/mycourses/:studentId', getCoursesByStudentId);
 
