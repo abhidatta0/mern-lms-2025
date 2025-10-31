@@ -122,3 +122,11 @@ export async function fetchMyCourses(id:string) {
   const { data } = await axiosInstance.get(`/student/course/get/mycourses/${id}`);
   return data;
 }
+
+export async function getCurrentCourseProgressService({userId, courseId}:{userId:string, courseId:string}) {
+  const { data } = await axiosInstance.post(`/student/course/get/mycourse/progress`,{
+    userId,
+    courseId,
+  });
+  return data;
+}

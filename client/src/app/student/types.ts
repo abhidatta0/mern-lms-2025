@@ -17,3 +17,9 @@ export type BoughtCourseInfo = {
   "dateOfPurchase": Date,
   "_id": string,
 }
+
+export type CourseProgress = {
+  lectureId: string,
+  viewed: boolean,
+  dateViewed: Date,
+}
