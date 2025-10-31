@@ -17,6 +17,9 @@ import { fetchStudentViewCourseListService } from "@/services";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import {useNavigate} from 'react-router-dom';
+import type { InstructorCourse } from "@/app/instructor/types";
+import { useUserDetails } from "@/app/auth/useUserDetails";
+import { Badge } from "@/components/ui/badge"
 
 const createQueryStringForFilters = (filters:Record<string,string[]>)=>{
   const queryParams = [];
@@ -31,6 +34,7 @@ const createQueryStringForFilters = (filters:Record<string,string[]>)=>{
 }
 const CoursesListPage = () => {
   const navigate = useNavigate();
+  const user = useUserDetails();
   const [sort, setSort] = useState(sortOptions[0].id);
   const [filters, setFilters] = useState<Record<string,string[]>>({});
   const setSearchParams = useSearchParams()[1];
@@ -81,6 +85,10 @@ const CoursesListPage = () => {
       console.log({indexOfCurrentOption});
     }
     setFilters(copyFilters)
+  }
+
+  const isCourseBought = (course:InstructorCourse)=>{
+    return course.students.findIndex(s=> s.studentId === user._id) !== -1;
   }
 
   return (
@@ -177,6 +185,7 @@ const CoursesListPage = () => {
                       <p className="font-bold text-lg">
                         ${courseItem.pricing}
                       </p>
+                      {isCourseBought(courseItem) ? <Badge> Go to course</Badge> : null}
                     </div>
                   </CardContent>
                 </Card>

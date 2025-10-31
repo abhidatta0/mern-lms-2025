@@ -24,12 +24,13 @@ export type InstructorCourse = {
     instructorId: string,
     instructorName: string,
     date: Date,
-    students:never[],
+    students:{paidAmount: string, studentId: string}[],
     curriculum: CourseCurriculumFormData[],
     isPublished: boolean,
 } & CourseLandingFormData;
 
-export type CreateCoursePayload = Omit<InstructorCourse,'_id'>;
+export type CreateCoursePayload = Omit<InstructorCourse,'_id'|'students'>;
+export type UpdateCoursePayload = Partial<InstructorCourse>;
 
 export type CloudinarySingleMediaUploadResponse = {
   resource_type: 'video'|'image',

@@ -8,9 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CircleX, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { fetchInstructorCourseListService } from "@/services";
+import { editCourseService, fetchInstructorCourseListService } from "@/services";
 import { useEffect, useState, useCallback } from "react"
 import { useUserDetails } from "@/app/auth/useUserDetails";
 import type { InstructorCourse } from "../types";
@@ -31,6 +31,19 @@ const InstructorCourses = () => {
   useEffect(()=>{
     fetchAllCourses();
   },[]);
+
+  const archiveCourse = async (course: InstructorCourse)=>{
+    const payload = {
+     isPublished: !course.isPublished,
+    };
+
+    const response =   await editCourseService(course._id,payload);
+    if(response.success){
+      fetchAllCourses();
+    }
+  }
+
+
 
 
   return (
@@ -57,12 +70,12 @@ const InstructorCourses = () => {
                       <TableCell className="font-medium">{course.title}</TableCell>
                       <TableCell>${course.pricing}</TableCell>
                       <TableCell>{Number(course.pricing)*course.students.length}</TableCell>
-                      <TableCell className="text-right">
-                        <Button variant='ghost' size='sm' className="mr-2" onClick={()=> navigate(`edit-course/${course._id}`)}>
+                      <TableCell className="text-right flex justify-end">
+                        <Button variant='ghost' size='sm' onClick={()=> navigate(`edit-course/${course._id}`)}>
                           <Edit />
                         </Button>
-                        <Button variant='ghost' size='sm' className="text-red-500">
-                          <CircleX />
+                        <Button variant='ghost' size='sm' className="text-red-500" onClick={()=> archiveCourse(course)}>
+                          {course.isPublished ? 'Archive Course':'Unarchive Course'}
                         </Button>
                       </TableCell>
                     </TableRow>

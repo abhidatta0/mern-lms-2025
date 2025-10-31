@@ -5,7 +5,7 @@ import {useState,useEffect, useCallback} from 'react';
 import { getCurrentCourseProgressService } from "@/services";
 import { useUserDetails } from "@/app/auth/useUserDetails";
 import type { CourseCurriculumFormData, InstructorCourse } from "@/app/instructor/types";
-import type { CourseProgress } from "../types";
+import type { CourseProgress as CourseProgressType } from "../types";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ const CourseProgress = () => {
   const [lockCourse, setLockCourse] = useState(false);
   const {setIsLoading, isLoading} = useStudentContext();
 
-  const [studentCurrentCourseProgress, setStudentCurrentCourseProgress] = useState<{courseDetails: InstructorCourse|null,progress:CourseProgress[]}>({courseDetails:null, progress:[]})
+  const [studentCurrentCourseProgress, setStudentCurrentCourseProgress] = useState<{courseDetails: InstructorCourse|null,progress:CourseProgressType[]}>({courseDetails:null, progress:[]})
   const [currentLecture, setCurrentLecture] = useState<CourseCurriculumFormData|null>(null);
   const [showCourseCompleteDialog, setShowCourseCompleteDialog] =
     useState(false);

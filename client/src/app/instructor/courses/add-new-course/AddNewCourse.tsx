@@ -93,7 +93,6 @@ const AddNewCourse = () => {
       instructorName: user.userName,
       date: new Date(),
       ...courseLandingFormData,
-      students:[],
       curriculum: courseCurriculumFormData,
       isPublished: true,
     };

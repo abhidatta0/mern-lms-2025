@@ -1,5 +1,5 @@
 import axiosInstance from "@/api/axiosInstance";
-import type { CreateCoursePayload } from "@/app/instructor/types";
+import type { CreateCoursePayload, UpdateCoursePayload } from "@/app/instructor/types";
 import type { Order } from "@/app/student/types";
 import type { initialSignInFormData, initialSignUpFormData } from "@/config";
 
@@ -65,7 +65,7 @@ export async function addNewCourseService(formData:CreateCoursePayload) {
   return data;
 }
 
-export async function editCourseService(id:string,formData:CreateCoursePayload) {
+export async function editCourseService(id:string,formData:UpdateCoursePayload) {
   const { data } = await axiosInstance.put(`/instructor/course/update/${id}`, formData);
 
   return data;
