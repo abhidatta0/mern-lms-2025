@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player'
 type Props = {
    width: string,
    height: string,
-   url: string
+   url?: string
 }
 const VideoPlayer = ({width, height, url}:Props) => {
 
