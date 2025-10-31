@@ -1,6 +1,7 @@
 const Course = require('../../models/Course');
 const StudentCourses = require('../../models/StudentCourses');
 const StudentCourse = require('../../models/StudentCourses');
+const CourseProgress = require('../../models/CourseProgress');
 
 
 const getAllStudentViewCourses = async (req, res)=>{
@@ -100,5 +101,61 @@ const getCoursesByStudentId = async (req, res)=>{
     }
 }
 
+const getCurrentCourseProgress =  async (req, res)=>{
+    try{
+       const {userId, courseId} = req.body;
+       const studentCourse = await StudentCourse.findOne({userId});
+       const isCoursePurchased = !!studentCourse && (studentCourse.courses.findIndex(item => item.courseId === courseId) !== -1)
 
-module.exports = {getAllStudentViewCourses, getStudentViewCourseDetails,getCoursesByStudentId};
+
+       if(!isCoursePurchased){
+        res.status(200).json({
+            success: true,
+            data:{
+               isPurchased: false,
+            },
+            message: 'You  need to purchase this course to access it'
+        })
+       }
+
+       const currentUserCourseProgress = await CourseProgress.findOne({userId, courseId});
+        
+        const courseDetails = await Course.findById(courseId);
+
+       // for first time , after buying
+       if(!currentUserCourseProgress || currentUserCourseProgress?.lectureProgress.length === 0){
+        res.status(200).json({
+            success: true,
+            message: 'No progress found.You  can start watching',
+            data:{
+                courseDetails: courseDetails,
+                progress: [],
+                isPurchased: true
+            }
+        })
+       }else{
+        res.status(200).json({
+            success: true,
+            message: 'No progress found.You  can start watching',
+            data:{
+                courseDetails: courseDetails,
+                progress: currentUserCourseProgress.lectureProgress,
+                completed: currentUserCourseProgress.completed,
+                completionDate: currentUserCourseProgress.completionDate,
+                isPurchased: true
+            }
+        })
+       }
+
+    }catch(e){
+        console.error(e);
+        res.status(500).json({
+            success: false,
+            message: 'Some error occured!'
+        })
+    }
+}
+
+module.exports = {getAllStudentViewCourses, getStudentViewCourseDetails,getCoursesByStudentId,
+   getCurrentCourseProgress,
+};
