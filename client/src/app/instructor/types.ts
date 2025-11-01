@@ -17,6 +17,7 @@ export type CourseCurriculumFormData= {
     videoUrl: string,
     freePreview: boolean,
     public_id: string,
+    _id: string,
 };
 
 export type InstructorCourse = {

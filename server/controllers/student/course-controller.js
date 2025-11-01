@@ -123,7 +123,7 @@ const getCurrentCourseProgress =  async (req, res)=>{
         const courseDetails = await Course.findById(courseId);
 
        // for first time , after buying
-       if(!currentUserCourseProgress || currentUserCourseProgress?.lectureProgress.length === 0){
+       if(!currentUserCourseProgress || currentUserCourseProgress?.lecturesProgress.length === 0){
         res.status(200).json({
             success: true,
             message: 'No progress found.You  can start watching',
@@ -136,10 +136,9 @@ const getCurrentCourseProgress =  async (req, res)=>{
        }else{
         res.status(200).json({
             success: true,
-            message: 'No progress found.You  can start watching',
             data:{
                 courseDetails: courseDetails,
-                progress: currentUserCourseProgress.lectureProgress,
+                progress: currentUserCourseProgress.lecturesProgress,
                 completed: currentUserCourseProgress.completed,
                 completionDate: currentUserCourseProgress.completionDate,
                 isPurchased: true
@@ -156,6 +155,113 @@ const getCurrentCourseProgress =  async (req, res)=>{
     }
 }
 
+//mark current lecture as viewed
+const markCurrentLectureAsViewed = async (req, res) => {
+  try {
+    const { userId, courseId, lectureId } = req.body;
+
+    const course = await Course.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    let progress = await CourseProgress.findOne({ userId, courseId });
+    if (!progress) {
+      progress = new CourseProgress({
+        userId,
+        courseId,
+        lecturesProgress: [
+          {
+            lectureId,
+            viewed: true,
+            dateViewed: new Date(),
+          },
+        ],
+      });
+      await progress.save();
+    } else {
+      const lecturesProgress = progress.lecturesProgress.find(
+        (item) => item.lectureId === lectureId
+      );
+
+      if (lecturesProgress) {
+        lecturesProgress.viewed = true;
+        lecturesProgress.dateViewed = new Date();
+      } else {
+        progress.lecturesProgress.push({
+          lectureId,
+          viewed: true,
+          dateViewed: new Date(),
+        });
+      }
+      await progress.save();
+    }
+
+    //check all the lectures are viewed or not
+    const allLecturesViewed =
+      progress.lecturesProgress.length === course.curriculum.length &&
+      progress.lecturesProgress.every((item) => item.viewed);
+
+    if (allLecturesViewed) {
+      progress.completed = true;
+      progress.completionDate = new Date();
+
+      await progress.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Lecture marked as viewed",
+      data: progress,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
+
+//reset course progress
+const resetCurrentCourseProgress = async (req, res) => {
+  try {
+    const { userId, courseId } = req.body;
+
+    const progress = await CourseProgress.findOne({ userId, courseId });
+
+    if (!progress) {
+      return res.status(404).json({
+        success: false,
+        message: "Progress not found!",
+      });
+    }
+
+    progress.lecturesProgress = [];
+    progress.completed = false;
+    progress.completionDate = null;
+
+    await progress.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Course progress has been reset",
+      data: progress,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Some error occured!",
+    });
+  }
+};
+
+
 module.exports = {getAllStudentViewCourses, getStudentViewCourseDetails,getCoursesByStudentId,
-   getCurrentCourseProgress,
+   getCurrentCourseProgress,markCurrentLectureAsViewed,resetCurrentCourseProgress
 };

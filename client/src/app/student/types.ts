@@ -22,4 +22,5 @@ export type CourseProgress = {
   lectureId: string,
   viewed: boolean,
   dateViewed: Date,
+  _id:string,
 }

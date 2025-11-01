@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {useState,useEffect, useCallback} from 'react';
-import { getCurrentCourseProgressService } from "@/services";
+import { getCurrentCourseProgressService, markCurrentLectureAsViewedService } from "@/services";
 import { useUserDetails } from "@/app/auth/useUserDetails";
 import type { CourseCurriculumFormData, InstructorCourse } from "@/app/instructor/types";
 import type { CourseProgress as CourseProgressType } from "../types";
@@ -53,17 +53,19 @@ const CourseProgress = () => {
             setCurrentLecture(response.data.courseDetails.curriculum[0]);
             setShowCourseCompleteDialog(true);
             setShowConfetti(true);
-            return;
           }
 
-          if(!response.data.progress || response.data.progress.length === 0){
+          else if(!response.data.progress || response.data.progress.length === 0){
             setCurrentLecture(response.data.courseDetails.curriculum[0])
+          }else{
+            const lastIndexOfLectureViewedTrue = response.data.progress.reduceRight((acc, current, index)=> acc === -1 && current.viewed ? index : acc,-1);
+            setCurrentLecture(response.data.courseDetails.curriculum[lastIndexOfLectureViewedTrue+1])
           }
       }
     }
     setIsLoading(false);
 
-  },[])
+  },[id,setIsLoading,user._id])
 
   useEffect(() => {
     fetchCurrentCourseProgress();
@@ -73,6 +75,14 @@ const CourseProgress = () => {
     if (showConfetti) setTimeout(() => setShowConfetti(false), 5000);
   }, [showConfetti]);
 
+  const handleCurrentLectureViewed = async ()=>{
+    if(currentLecture && id){
+     const response = await markCurrentLectureAsViewedService({userId: user._id, courseId:id, lectureId:currentLecture._id});
+     if(response.success){
+      fetchCurrentCourseProgress()
+     }
+    }
+  }
 
   if(isLoading){
     return <Skeleton className="w-full h-screen p-4"/>
@@ -82,6 +92,7 @@ const CourseProgress = () => {
     return <p className="leading-2 text-center p-4">No details found</p>
   }
 
+  console.log({currentLecture})
   return (
       <div className="flex flex-col h-screen text-white">
       {showConfetti && <Confetti />}
@@ -116,6 +127,7 @@ const CourseProgress = () => {
             width="100%"
             height="500px"
             url={currentLecture?.videoUrl ?? undefined}
+            onVideoEnded={()=> currentLecture ? handleCurrentLectureViewed():null}
           />
           <div className="p-6 ">
             <h2 className="text-2xl text-foreground font-bold mb-2">{currentLecture?.title}</h2>
@@ -155,7 +167,16 @@ const CourseProgress = () => {
                 </div>
               </ScrollArea>
             </TabsContent>
-            <TabsContent value="overview"><p className="text-foreground">Overview</p></TabsContent>
+            <TabsContent value="overview">
+              <ScrollArea className="h-full">
+                <div className="p-4">
+                  <h2 className="text-xl font-bold mb-4 text-primary">About this course</h2>
+                  <p className="text-foreground">
+                    {studentCurrentCourseProgress.courseDetails?.description}
+                  </p>
+                </div>
+              </ScrollArea>
+            </TabsContent>
           </Tabs>
         </div>
       </div>

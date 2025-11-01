@@ -1,11 +1,13 @@
+import type { SyntheticEvent } from 'react';
 import ReactPlayer from 'react-player'
 
 type Props = {
    width: string,
    height: string,
-   url?: string
+   url?: string,
+   onVideoEnded?: (e:SyntheticEvent<HTMLVideoElement, Event>)=> void,
 }
-const VideoPlayer = ({width, height, url}:Props) => {
+const VideoPlayer = ({width, height, url, onVideoEnded}:Props) => {
 
   return (
     <div 
@@ -15,6 +17,7 @@ const VideoPlayer = ({width, height, url}:Props) => {
         <ReactPlayer width={'100%'} height={'100%'} src={url}
         className="absolute top-0 left-0"
         controls
+        onEnded={onVideoEnded}
         />
     </div>
   )

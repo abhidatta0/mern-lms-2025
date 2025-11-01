@@ -1,6 +1,6 @@
 import axiosInstance from "@/api/axiosInstance";
-import type { CreateCoursePayload, UpdateCoursePayload } from "@/app/instructor/types";
-import type { Order } from "@/app/student/types";
+import type { CreateCoursePayload, InstructorCourse, UpdateCoursePayload } from "@/app/instructor/types";
+import type { CourseProgress, Order } from "@/app/student/types";
 import type { initialSignInFormData, initialSignUpFormData } from "@/config";
 
 export async function registerUser(formData: typeof initialSignUpFormData){
@@ -124,7 +124,24 @@ export async function fetchMyCourses(id:string) {
 }
 
 export async function getCurrentCourseProgressService({userId, courseId}:{userId:string, courseId:string}) {
-  const { data } = await axiosInstance.post(`/student/course/get/mycourse/progress`,{
+  const { data } = await axiosInstance.post<{data: {courseDetails:InstructorCourse,isPurchased:boolean,progress:CourseProgress[],completed?:boolean},success:boolean}>(`/student/course/mycourse/progress`,{
+    userId,
+    courseId,
+  });
+  return data;
+}
+
+export async function markCurrentLectureAsViewedService({userId, courseId, lectureId}:{userId:string, courseId:string,lectureId:string}) {
+  const { data } = await axiosInstance.post(`/student/course/mycourse/lecture-viewed`,{
+    userId,
+    courseId,
+    lectureId,
+  });
+  return data;
+}
+
+export async function resetCurrentCourseProgressService({userId, courseId}:{userId:string, courseId:string}) {
+  const { data } = await axiosInstance.post(`/student/course/progress-reset`,{
     userId,
     courseId,
   });
