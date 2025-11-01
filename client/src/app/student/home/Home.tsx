@@ -5,6 +5,7 @@ import { useStudentContext } from "../StudentContext";
 import { useEffect } from "react";
 import { fetchStudentViewCourseListService } from "@/services";
 import { useNavigate } from "react-router-dom";
+import { createQueryStringForFilters } from "@/lib/utils";
 
 const Home = () => {
   const {studentViewCoursesList, setStudentViewCoursesList} = useStudentContext();
@@ -20,8 +21,8 @@ const Home = () => {
       category: [id],
     };
 
-    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-    navigate("/courses");
+    const filtersParams = new URLSearchParams(createQueryStringForFilters(currentFilter));
+    navigate(`/courses?${filtersParams}`);
   }
   
   useEffect(()=>{

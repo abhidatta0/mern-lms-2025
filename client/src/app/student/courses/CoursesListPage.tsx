@@ -20,27 +20,14 @@ import {useNavigate} from 'react-router-dom';
 import type { InstructorCourse } from "@/app/instructor/types";
 import { useUserDetails } from "@/app/auth/useUserDetails";
 import { Badge } from "@/components/ui/badge"
+import { createQueryStringForFilters } from "@/lib/utils";
 
-const createQueryStringForFilters = (filters:Record<string,string[]>)=>{
-  const queryParams = [];
-  for(const [key, value] of Object.entries(filters)){
-    if(Array.isArray(value) && value.length >0){
-      const paramValue = value.join(',');
-      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
-    }
-  }
-
-  return queryParams.join('&');
-}
 const CoursesListPage = () => {
   const navigate = useNavigate();
   const user = useUserDetails();
   const [sort, setSort] = useState(sortOptions[0].id);
-  const [filters, setFilters] = useState<Record<string,string[]>>(()=>{
-    return JSON.parse(sessionStorage.getItem("filters") || '{}') || {}
-  });
-  const setSearchParams = useSearchParams()[1];
-
+  const [filters, setFilters] = useState<Record<string,string[]>>({});
+  const [searchParams, setSearchParams] = useSearchParams();
   const {studentViewCoursesList, setStudentViewCoursesList, isLoading, setIsLoading} = useStudentContext();
 
   const fetchAllStudentViewCourses = useCallback(async ()=> {
@@ -65,6 +52,19 @@ const CoursesListPage = () => {
     setSearchParams(new URLSearchParams(buildQueryStringForFilters));
   },[filters, setSearchParams]);
 
+  const updateFilters = useCallback((key:string, value:string)=>{
+     setFilters({
+        ...filters,
+        [key]:value.split(','),
+      })
+  },[filters]);
+
+  useEffect(()=>{
+    for(const [key, value] of searchParams.entries()){
+      updateFilters(key, value);
+    }
+  },[]);
+
   const handleFilterOnChange = (section: string, currentOptionId: string)=>{
     let copyFilters = {...filters};
     const indexOfCurrentSection = Object.keys(copyFilters).indexOf(section);
@@ -87,7 +87,6 @@ const CoursesListPage = () => {
       console.log({indexOfCurrentOption});
     }
     setFilters(copyFilters);
-    sessionStorage.setItem("filters", JSON.stringify(copyFilters));
   }
 
   const isCourseBought = (course:InstructorCourse)=>{
@@ -109,7 +108,7 @@ const CoursesListPage = () => {
                     {
                      values.map((option)=>(
                       <Label className="flex font-medium items-center gap-3" key={option.id}>
-                          <Checkbox checked={Object.keys(filters).length > 0 && filters[keyItem]?.includes(option.id)} onCheckedChange={()=> handleFilterOnChange(keyItem,option.id)}/>
+                          <Checkbox checked={Object.keys(filters).length > 0 && filters[keyItem] && filters[keyItem].includes(option.id)} onCheckedChange={()=> handleFilterOnChange(keyItem,option.id)}/>
                           {option.label}
                       </Label>
                      ))

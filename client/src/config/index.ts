@@ -168,7 +168,7 @@ export const courseLandingInitialFormData = {
   isPublished: true,
 };
 
-export const courseCurriculumInitialFormData:CourseCurriculumFormData[] = [
+export const courseCurriculumInitialFormData:Omit<CourseCurriculumFormData,'_id'>[] = [
   {
     title: "",
     videoUrl: "",
