@@ -4,14 +4,26 @@ import { courseCategories } from "@/config";
 import { useStudentContext } from "../StudentContext";
 import { useEffect } from "react";
 import { fetchStudentViewCourseListService } from "@/services";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const {studentViewCoursesList, setStudentViewCoursesList} = useStudentContext();
-
+  const navigate = useNavigate();
   async function fetchAllStudentViewCourses() {
     const response = await fetchStudentViewCourseListService();
     if (response?.success) setStudentViewCoursesList(response.data);
   }
+
+  function handleNavigateToCoursesPage(id:string) {
+    sessionStorage.removeItem("filters");
+    const currentFilter = {
+      category: [id],
+    };
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+    navigate("/courses");
+  }
+  
   useEffect(()=>{
    fetchAllStudentViewCourses();
   },[])
@@ -42,6 +54,7 @@ const Home = () => {
               className="justify-start"
               variant="outline"
               key={categoryItem.id}
+              onClick={() => handleNavigateToCoursesPage(categoryItem.id)}
             >
               {categoryItem.label}
             </Button>

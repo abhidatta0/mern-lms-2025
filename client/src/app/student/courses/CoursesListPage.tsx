@@ -5,7 +5,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ArrowUpDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { sortOptions, filterOptions } from "@/config";
@@ -36,12 +36,14 @@ const CoursesListPage = () => {
   const navigate = useNavigate();
   const user = useUserDetails();
   const [sort, setSort] = useState(sortOptions[0].id);
-  const [filters, setFilters] = useState<Record<string,string[]>>({});
+  const [filters, setFilters] = useState<Record<string,string[]>>(()=>{
+    return JSON.parse(sessionStorage.getItem("filters") || '{}') || {}
+  });
   const setSearchParams = useSearchParams()[1];
 
   const {studentViewCoursesList, setStudentViewCoursesList, isLoading, setIsLoading} = useStudentContext();
 
-  async function fetchAllStudentViewCourses() {
+  const fetchAllStudentViewCourses = useCallback(async ()=> {
     const query = new URLSearchParams({
       ...filters,
       sortBy: sort,
@@ -50,18 +52,18 @@ const CoursesListPage = () => {
     const response = await fetchStudentViewCourseListService(query);
     if (response?.success) setStudentViewCoursesList(response.data);
     setIsLoading(false);
-  }
+  },[filters, setIsLoading, setStudentViewCoursesList, sort])
 
   useEffect(()=>{
     if(filters!==null && sort !== null){
       fetchAllStudentViewCourses();
     }
-  },[filters,sort]);
+  },[filters,sort, setIsLoading, setStudentViewCoursesList, fetchAllStudentViewCourses]);
 
   useEffect(()=>{
     const buildQueryStringForFilters = createQueryStringForFilters(filters);
-    setSearchParams(buildQueryStringForFilters);
-  },[filters]);
+    setSearchParams(new URLSearchParams(buildQueryStringForFilters));
+  },[filters, setSearchParams]);
 
   const handleFilterOnChange = (section: string, currentOptionId: string)=>{
     let copyFilters = {...filters};
@@ -84,7 +86,8 @@ const CoursesListPage = () => {
 
       console.log({indexOfCurrentOption});
     }
-    setFilters(copyFilters)
+    setFilters(copyFilters);
+    sessionStorage.setItem("filters", JSON.stringify(copyFilters));
   }
 
   const isCourseBought = (course:InstructorCourse)=>{

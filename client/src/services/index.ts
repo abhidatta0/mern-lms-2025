@@ -88,7 +88,7 @@ export async function fetchInstructorCourseDetailsService(id:string) {
 }
 
 export async function fetchStudentViewCourseListService(query?: URLSearchParams) {
-  const { data } = await axiosInstance.get(`/student/course/get?${query}`);
+  const { data } = await axiosInstance.get(`/student/course/get?${query ?? ''}`);
   return data;
 }
 
