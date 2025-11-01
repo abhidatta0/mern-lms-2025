@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import {useState,useEffect, useCallback} from 'react';
-import { getCurrentCourseProgressService, markCurrentLectureAsViewedService } from "@/services";
+import { getCurrentCourseProgressService, markCurrentLectureAsViewedService, resetCurrentCourseProgressService } from "@/services";
 import { useUserDetails } from "@/app/auth/useUserDetails";
 import type { CourseCurriculumFormData, InstructorCourse } from "@/app/instructor/types";
 import type { CourseProgress as CourseProgressType } from "../types";
@@ -28,7 +28,7 @@ const CourseProgress = () => {
   const [lockCourse, setLockCourse] = useState(false);
   const {setIsLoading, isLoading} = useStudentContext();
 
-  const [studentCurrentCourseProgress, setStudentCurrentCourseProgress] = useState<{courseDetails: InstructorCourse|null,progress:CourseProgressType[]}>({courseDetails:null, progress:[]})
+  const [studentCurrentCourseProgress, setStudentCurrentCourseProgress] = useState<{courseDetails: InstructorCourse,progress:CourseProgressType[]}|null>(null)
   const [currentLecture, setCurrentLecture] = useState<CourseCurriculumFormData|null>(null);
   const [showCourseCompleteDialog, setShowCourseCompleteDialog] =
     useState(false);
@@ -92,7 +92,23 @@ const CourseProgress = () => {
     return <p className="leading-2 text-center p-4">No details found</p>
   }
 
-  console.log({currentLecture})
+  async function handleRewatchCourse() {
+    if(studentCurrentCourseProgress){
+       const response = await resetCurrentCourseProgressService(
+      {userId: user._id,
+      courseId: studentCurrentCourseProgress.courseDetails._id,
+      }
+    );
+
+    if (response?.success) {
+      setCurrentLecture(null);
+      setShowConfetti(false);
+      setShowCourseCompleteDialog(false);
+      fetchCurrentCourseProgress();
+    }
+    }
+  }
+
   return (
       <div className="flex flex-col h-screen text-white">
       {showConfetti && <Confetti />}
@@ -160,6 +176,13 @@ const CourseProgress = () => {
                         className="flex items-center space-x-2 text-sm text-foreground font-bold cursor-pointer"
                         key={item.title}
                       >
+                      {studentCurrentCourseProgress.progress?.find(
+                          (progressItem) => progressItem.lectureId === item._id
+                        )?.viewed ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Play className="h-4 w-4 " />
+                        )}
                         <span>{item.title}</span>
                       </div>
                     )
@@ -203,7 +226,7 @@ const CourseProgress = () => {
                 <Button onClick={() => navigate("/student-courses")}>
                   My Courses Page
                 </Button>
-                <Button>Rewatch Course</Button>
+                <Button onClick={handleRewatchCourse}>Rewatch Course</Button>
               </div>
               </div>
             </DialogDescription>

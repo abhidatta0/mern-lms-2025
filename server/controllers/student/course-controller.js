@@ -65,9 +65,7 @@ const getStudentViewCourseDetails = async (req, res)=>{
        userId: studentId,
      });
 
-     console.log({studentCourse, ind: studentCourse.courses.findIndex(item => item.courseId === id)})
-
-     const isCoursePurchased = !!studentCourse && (studentCourse.courses.findIndex(item => item.courseId === id) !== -1)
+     const isCoursePurchased = !!(studentCourse && (studentCourse.courses.findIndex(item => item.courseId === id) !== -1));
 
      console.log({isCoursePurchased})
      res.status(200).json({

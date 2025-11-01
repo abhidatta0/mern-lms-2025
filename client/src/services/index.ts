@@ -141,7 +141,7 @@ export async function markCurrentLectureAsViewedService({userId, courseId, lectu
 }
 
 export async function resetCurrentCourseProgressService({userId, courseId}:{userId:string, courseId:string}) {
-  const { data } = await axiosInstance.post(`/student/course/progress-reset`,{
+  const { data } = await axiosInstance.post(`/student/course/mycourse/progress-reset`,{
     userId,
     courseId,
   });

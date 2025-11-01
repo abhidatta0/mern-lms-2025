@@ -68,7 +68,7 @@ const InstructorCourses = () => {
                   coursesList.map((course)=>(
                     <TableRow key={course._id}>
                       <TableCell className="font-medium">{course.title}</TableCell>
-                      <TableCell>${course.pricing}</TableCell>
+                      <TableCell>{course.students.length}</TableCell>
                       <TableCell>{Number(course.pricing)*course.students.length}</TableCell>
                       <TableCell className="text-right flex justify-end">
                         <Button variant='ghost' size='sm' onClick={()=> navigate(`edit-course/${course._id}`)}>
