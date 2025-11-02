@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState, useEffect, useCallback } from "react";
-import { ArrowUpDownIcon } from "lucide-react";
+import { ArrowUpDownIcon,SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { sortOptions, filterOptions } from "@/config";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -82,6 +82,10 @@ const CoursesListPage = () => {
         copyFilters[section].push(currentOptionId);
       }else{
         copyFilters[section].splice(indexOfCurrentOption,1);
+        if(copyFilters[section].length === 0){
+          const {[section]:_, ...rest} = copyFilters;
+          copyFilters = {...rest};
+        }
       }
 
       console.log({indexOfCurrentOption});
@@ -97,6 +101,47 @@ const CoursesListPage = () => {
     <div>
      <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">All Courses</h1>
+      <div className="flex justify-between items-center mb-2">
+        <div>
+          <Button variant='outline'>
+            <SlidersHorizontal className="text-primary"/>
+            Filter
+            {Object.keys(filters).length > 0 && <div className="size-1 bg-primary rounded-full"></div>}
+          </Button>
+        </div>
+        <div>
+          <div className="flex gap-2 items-center">
+            <span>Sort by:</span>
+             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 p-5"
+                >
+                  <ArrowUpDownIcon className="h-4 w-4" />
+                  <span className="text-[16px] font-medium">{sortOptions.find(option=> option.id === sort)?.label}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuRadioGroup
+                  value={sort}
+                  onValueChange={(value) => setSort(value)}
+                >
+                  {sortOptions.map((sortItem) => (
+                    <DropdownMenuRadioItem
+                      value={sortItem.id}
+                      key={sortItem.id}
+                    >
+                      {sortItem.label}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col md:flex-row gap-4">
         <aside className="w-full md:w-64 space-y-4">
           <div>
@@ -120,34 +165,7 @@ const CoursesListPage = () => {
           </div>
         </aside>
         <main className="flex-1">
-          <div className="flex justify-end items-center mb-4 gap-5">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 p-5"
-                >
-                  <ArrowUpDownIcon className="h-4 w-4" />
-                  <span className="text-[16px] font-medium">Sort By</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[180px]">
-                <DropdownMenuRadioGroup
-                  value={sort}
-                  onValueChange={(value) => setSort(value)}
-                >
-                  {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem
-                      value={sortItem.id}
-                      key={sortItem.id}
-                    >
-                      {sortItem.label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex justify-end items-center mb-4">
             <span className="text-sm text-black font-bold">
               {studentViewCoursesList.length} Results
             </span>
