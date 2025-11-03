@@ -5,11 +5,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState, useEffect, useCallback } from "react";
-import { ArrowUpDownIcon,SlidersHorizontal } from "lucide-react";
+import { useState, useEffect, useCallback, Fragment } from "react";
+import { ArrowUpDownIcon,SlidersHorizontal , UserRound} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { sortOptions, filterOptions } from "@/config";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { sortOptions, filterOptions, courseCategories } from "@/config";
+import { Card, CardContent, CardTitle, CardFooter } from "@/components/ui/card";
 import { useStudentContext } from "../StudentContext";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,12 +21,14 @@ import type { InstructorCourse } from "@/app/instructor/types";
 import { useUserDetails } from "@/app/auth/useUserDetails";
 import { Badge } from "@/components/ui/badge"
 import { createQueryStringForFilters } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator"
 
 const CoursesListPage = () => {
   const navigate = useNavigate();
   const user = useUserDetails();
   const [sort, setSort] = useState(sortOptions[0].id);
   const [filters, setFilters] = useState<Record<string,string[]>>({});
+  const [showFiltersSidebar, setShowFiltersSidebar] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const {studentViewCoursesList, setStudentViewCoursesList, isLoading, setIsLoading} = useStudentContext();
 
@@ -99,11 +101,11 @@ const CoursesListPage = () => {
 
   return (
     <div>
-     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">All Courses</h1>
+     <div className="container mx-auto p-4 space-y-2">
+      <h1 className="text-3xl font-bold">All Courses</h1>
       <div className="flex justify-between items-center mb-2">
         <div>
-          <Button variant='outline'>
+          <Button variant='outline' onClick={()=> setShowFiltersSidebar(!showFiltersSidebar)}>
             <SlidersHorizontal className="text-primary"/>
             Filter
             {Object.keys(filters).length > 0 && <div className="size-1 bg-primary rounded-full"></div>}
@@ -111,7 +113,7 @@ const CoursesListPage = () => {
         </div>
         <div>
           <div className="flex gap-2 items-center">
-            <span>Sort by:</span>
+            <span className="text-sm">Sort by:</span>
              <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -120,7 +122,7 @@ const CoursesListPage = () => {
                   className="flex items-center gap-2 p-5"
                 >
                   <ArrowUpDownIcon className="h-4 w-4" />
-                  <span className="text-[16px] font-medium">{sortOptions.find(option=> option.id === sort)?.label}</span>
+                  <span>{sortOptions.find(option=> option.id === sort)?.label}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -142,72 +144,74 @@ const CoursesListPage = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
-        <aside className="w-full md:w-64 space-y-4">
-          <div>
-            {
-              Object.entries(filterOptions).map(([keyItem, values])=>(
-                <div className="space-y-4 p-4" key={keyItem}>
-                  <h3 className="font-bold mb-3">{keyItem.toUpperCase()}</h3>
-                  <div className="grid gap-2 mt-2">
-                    {
-                     values.map((option)=>(
-                      <Label className="flex font-medium items-center gap-3" key={option.id}>
-                          <Checkbox checked={Object.keys(filters).length > 0 && filters[keyItem] && filters[keyItem].includes(option.id)} onCheckedChange={()=> handleFilterOnChange(keyItem,option.id)}/>
-                          {option.label}
-                      </Label>
-                     ))
-                    }
-                  </div>
+      <div className="flex flex-col mb-6">
+        <span className="text-sm text-black font-bold self-end">
+          {studentViewCoursesList.length} Results
+        </span>
+        <Separator />
+      </div>
+      <div className={`flex flex-col md:flex-row ${showFiltersSidebar && 'gap-4'}`}>
+        <aside 
+        className={`space-y-4 overflow-hidden transition-all duration-200 ${
+            showFiltersSidebar ? "w-[250px] border" : "w-0"
+          }`}
+        >
+          {
+            Object.entries(filterOptions).map(([keyItem, values])=>(
+              <Fragment key={keyItem}>
+              <div className="p-4">
+                <h3 className="font-bold mb-3">{keyItem.toUpperCase()}</h3>
+                <div className="grid gap-2 mt-2">
+                  {
+                    values.map((option)=>(
+                    <Label className="flex font-medium items-center gap-3" key={option.id}>
+                        <Checkbox checked={Object.keys(filters).length > 0 && filters[keyItem] && filters[keyItem].includes(option.id)} onCheckedChange={()=> handleFilterOnChange(keyItem,option.id)}/>
+                        {option.label}
+                    </Label>
+                    ))
+                  }
                 </div>
-              ))
-            }
-          </div>
+              </div>
+              <Separator />
+              </Fragment>
+            ))
+          }
         </aside>
         <main className="flex-1">
-          <div className="flex justify-end items-center mb-4">
-            <span className="text-sm text-black font-bold">
-              {studentViewCoursesList.length} Results
-            </span>
-          </div>
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-wrap gap-2">
             {studentViewCoursesList && studentViewCoursesList.length > 0 ? (
               studentViewCoursesList.map((courseItem) => (
                 <Card
-                  className="cursor-pointer"
+                  className="cursor-pointer w-[300px] h-full flex flex-col justify-between"
                   key={courseItem._id}
                   onClick={()=> navigate(`/course/details/${courseItem._id}`)}
                 >
-                  <CardContent className="flex gap-4 p-4">
-                    <div className="w-48 h-32 flex-shrink-0">
+                  <CardContent className="space-y-4 ">
                       <img
                         src={courseItem.image}
-                        className="w-ful h-full object-cover"
+                        className="w-full h-[234px] object-fill"
                       />
-                    </div>
-                    <div className="flex-1">
+                    <div className="flex-1 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="bg-primary/10 p-1 text-sm text-primary">
+                        {courseCategories.find(c=> c.id === courseItem.category)?.label ?? ''}
+                        </div>
+                        <p className="font-bold text-base text-primary">
+                          ${courseItem.pricing}
+                        </p>
+                      </div>
                       <CardTitle className="text-xl mb-2">
                         {courseItem.title}
-                      </CardTitle>
-                      <p className="text-sm text-gray-600 mb-1">
-                        Created By{" "}
-                        <span className="font-bold">
-                          {courseItem.instructorName}
-                        </span>
-                      </p>
-                      <p className="text-[16px] text-gray-600 mt-3 mb-2">
-                        {`${courseItem.curriculum.length} ${
-                          courseItem.curriculum.length <= 1
-                            ? "Lecture"
-                            : "Lectures"
-                        } - ${courseItem.level.toUpperCase()} Level`}
-                      </p>
-                      <p className="font-bold text-lg">
-                        ${courseItem.pricing}
-                      </p>
-                      {isCourseBought(courseItem) ? <Badge> Go to course</Badge> : null}
+                      </CardTitle> 
                     </div>
                   </CardContent>
+                  <CardFooter className="justify-between h-[30px] items-center border-t">
+                      {isCourseBought(courseItem) ? <Badge variant='outline'>Already Enrolled</Badge> : <Badge> View Course</Badge>}
+                      {courseItem.students.length > 0 && <div className="flex items-center justify-between gap-0.5">
+                        <UserRound className='h-5 text-primary'/>
+                        <span className="text-base">{courseItem.students.length} students</span>
+                      </div>}
+                  </CardFooter>
                 </Card>
               ))
             ) : isLoading ? <Skeleton className="w-full h-[250px]"/> : (
