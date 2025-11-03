@@ -7,5 +7,33 @@
 (Instead of going to each 'client' and 'server' and run `npm run dev`)
 - Using `concurrently` we can do `npm run dev` (from project root) to simultaneously run without any hassle 😃
 
-## Techstack
+## Project overview : Learning management system (like Udemy)
+- As a student user, can login, view, buy and see course 
+- As a instructor, can login, create , manage his/her course , upload videos
+- Course viewer where student can complete his/her course lectures , rewatch course
+- Payment is handled by a dummy api call
+
+### [Screenshots 📸 ](./screenshots/)
+
+## Backend Techstack
 - Cloudinary (images/video assets)
+- mongodb + mongoose
+- Nodejs + express
+- Payments (dummy call)
+
+## Frontend Techstack
+- React + Typescript + Vite
+- Tailwind + Shadcn
+- React Player 
+
+### Notes:
+1) For backend, running locally,  create a .env.local file and populate values with the following: 
+```
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.lsv3m63.mongodb.net/
+CLIENT_URL=http://localhost:5173
+JWT_ACCESS_SECRET=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
