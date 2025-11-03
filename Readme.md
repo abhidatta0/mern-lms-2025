@@ -9,9 +9,11 @@
 
 ## Project overview : Learning management system (like Udemy)
 - As a student user, can login, view, buy and see course 
-- As a instructor, can login, create , manage his/her course , upload videos
+- As a instructor, can create, organize, and manage course content and structure
 - Course viewer where student can complete his/her course lectures , rewatch course
 - Payment is handled by a dummy api call
+- Bulk course videos import functionality
+- Built features including video streaming for purchased courses, real-time progress tracking, and enrollment management
 
 ### [Screenshots 📸 ](./screenshots/)
 
