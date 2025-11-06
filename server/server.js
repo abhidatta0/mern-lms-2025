@@ -40,8 +40,8 @@ app.use(express.json());
 (async function(){
 try {
   console.log("Connecting with mongodb....")
-  await mongoose.connect(MONGO_URI);
-  console.log("MongoDB connected");
+  const conn = await mongoose.connect(MONGO_URI);
+  console.log(`MongoDB connected: host name -> ${conn.connection.host}`);
     app.listen(port, (err)=>{
         if(err){
             console.error("Failed to start ",err);
