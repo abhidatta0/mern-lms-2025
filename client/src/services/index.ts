@@ -2,54 +2,61 @@ import axiosInstance from "@/api/axiosInstance";
 import type { CreateCoursePayload, InstructorCourse, UpdateCoursePayload } from "@/app/instructor/types";
 import type { CourseProgress, Order } from "@/app/student/types";
 import type { initialSignInFormData, initialSignUpFormData } from "@/config";
+import {type AxiosRequestConfig} from 'axios';
+
+type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
+
+async function apiCall<T = unknown>(
+  {method, url,payload,config}:
+  {method: HttpMethod,
+  url: string,
+  payload?: unknown,
+  config?:AxiosRequestConfig,
+}): Promise<T> {
+  const response = await axiosInstance[method]<T>(
+    url,
+    method === 'get' || method === 'delete' ? undefined : payload,
+    config,
+  );
+
+  return response.data;
+}
 
 export async function registerUser(formData: typeof initialSignUpFormData){
-    const {data} = await axiosInstance.post('/auth/register',{
-      ...formData,
-      role:'user'
-    });
-
-    return data;
+  return apiCall({method: 'post',url:'/auth/register',payload:{
+    ...formData,
+    role:'user'
+  }});
 }
 
 export async function loginUser(formData: typeof initialSignInFormData){
-    const {data} = await axiosInstance.post('/auth/login',{
-      ...formData,
-    });
-
-    return data;
+  return apiCall({method: 'post',url:'/auth/login',payload:formData});
 }
 
 export async function checkAuth(){
-    const {data} = await axiosInstance.get('/auth/check-auth');
-
-    return data;
+  return apiCall({method: 'get',url:'/auth/check-auth'});
 }
 
 export async function mediaUploadService(formData:FormData, onProgressCallback:(completed: number)=> void) {
-  const { data } = await axiosInstance.post("/media/upload", formData,{
+  return apiCall({method: 'post',url:'/media/upload',payload:formData, config:{
     onUploadProgress:progressEvent=>{
        const percentCompleted = Math.round(
         (progressEvent.loaded * 100) / (progressEvent.total ?? 1)
       );
       onProgressCallback(percentCompleted); 
     }
-  });
-
-  return data;
+  }});
 }
 
 export async function mediaBulkUploadService(formData:FormData, onProgressCallback:(completed: number)=> void) {
-  const { data } = await axiosInstance.post("/media/bulk-upload", formData,{
+   return apiCall({method: 'post',url:'/media/bulk-upload',payload:formData, config:{
     onUploadProgress:progressEvent=>{
        const percentCompleted = Math.round(
         (progressEvent.loaded * 100) / (progressEvent.total ?? 1)
       );
       onProgressCallback(percentCompleted); 
     }
-  });
-
-  return data;
+  }});
 }
 export async function deleteSingleMedia(publicId: string) {
   const { data } = await axiosInstance.post(`/media/delete`,{
