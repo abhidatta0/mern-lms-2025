@@ -30,6 +30,7 @@ const CoursesListPage = () => {
   const [filters, setFilters] = useState<Record<string,string[]>>({});
   const [showFiltersSidebar, setShowFiltersSidebar] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+  console.log({searchParams})
   const {studentViewCoursesList, setStudentViewCoursesList, isLoading, setIsLoading} = useStudentContext();
 
   const fetchAllStudentViewCourses = useCallback(async ()=> {

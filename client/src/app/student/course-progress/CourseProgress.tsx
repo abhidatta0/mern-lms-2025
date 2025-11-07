@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import VideoPlayer from "@/components/video-player";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import NotPurchased from "./NotPuchased";
 
 const CourseProgress = () => {
   const navigate = useNavigate();
@@ -89,7 +90,11 @@ const CourseProgress = () => {
   }
 
    if(!studentCurrentCourseProgress){
-    return <p className="leading-2 text-center p-4">No details found</p>
+    const errorMessage = 'No details found';
+    if(lockCourse && id){
+     return <NotPurchased courseId={id}/>
+    }
+    return <p className="leading-2 text-center p-4">{errorMessage}</p>
   }
 
   async function handleRewatchCourse() {
