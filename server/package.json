@@ -5,13 +5,17 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --env-file=.env.local --exec tsx server.ts"
+    "dev": "nodemon --exec tsx server.ts",
+    "db:generate": "drizzle-kit generate",
+    "migrate": "tsx  --env-file=.env scripts/migrate.ts",
+    "seed": "tsx --env-file=.env scripts/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
