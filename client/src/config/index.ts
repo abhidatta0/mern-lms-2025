@@ -48,7 +48,6 @@ export const initialSignInFormData:Record<string,string> = {
 };
 
 export const initialSignUpFormData:Record<string,string> = {
-  userName: "",
   userEmail: "",
   password: "",
 };

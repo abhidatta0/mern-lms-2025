@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, timestamp, boolean, numeric, primaryKey, unique, index, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar, timestamp, boolean, numeric, primaryKey, unique, index, pgEnum,serial } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const lecture_type_enum = pgEnum('lecture_type', ['quiz', 'lesson']);
@@ -11,7 +11,7 @@ export const currency = pgTable('currency', {
 });
 
 export const user = pgTable('user', {
-  id: text().primaryKey(),
+  id: serial().primaryKey(),
   email: varchar().notNull().unique(),
   password: varchar().notNull(),
   is_instructor: boolean().default(false),

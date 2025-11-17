@@ -1,12 +1,12 @@
-const express = require('express');
-const { registerUser, loginUser } = require('../../controllers/auth');
+import express, {Request} from 'express';
+import { registerUser, loginUser } from '../../controllers/auth';
 const authenticate = require('../../middlewares/auth');
 
 const router = express.Router();
 
 router.post('/register',registerUser)
 router.post('/login',loginUser)
-router.get('/check-auth',authenticate, (req, res)=>{
+router.get('/check-auth',authenticate, (req:Request, res)=>{
     const user = req.user;
 
     res.status(200).json({
@@ -18,4 +18,4 @@ router.get('/check-auth',authenticate, (req, res)=>{
     })
 })
 
-module.exports = router;
+export default router;

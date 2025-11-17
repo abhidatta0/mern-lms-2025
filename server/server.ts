@@ -1,15 +1,68 @@
-import express, { Express, Request, Response } from 'express';
+import cors from  'cors';
+import mongoose from 'mongoose';
+import express,{ Request, Response, NextFunction } from 'express';
+import authRoutes from './routes/auth';
+const instructorMediaRoutes = require('./routes/instructor/media-routes');
+const instructorCourseRoutes = require('./routes/instructor/course-routes');
+const studentCourseRoutes = require('./routes/student/course-routes');
+const studentOrderRoutes = require('./routes/student/order-routes');
 
+const port = process.env.PORT;
+const MONGO_URI = process.env.MONGO_URI;
 
-const app: Express = express();
-const port = process.env.PORT || 3000;
+const app = express();
+
+/* For debugging only
+app.use((req, res, next) => {
+    console.log(`\n=== INCOMING REQUEST ===`);
+    console.log(`Method: ${req.method}`);
+    console.log(`Path: ${req.path}`);
+    console.log(`Origin: ${req.get('origin')}`);
+    console.log(`Headers:`, req.headers);
+    next();
+});
+*/
+
+app.use(cors({
+    origin:process.env.CLIENT_URL,
+    methods:['GET','POST','PUT','DELETE'],
+    allowedHeaders:['Content-Type','Authorization']
+}));
+
+app.get('/test', (req, res) => {
+    res.json({ message: 'Server is working' });
+});
 
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World 123!');
-});
+(async function(){
+try {
+  console.log("Connecting with mongodb....")
+  const conn = await mongoose.connect(MONGO_URI!);
+  console.log(`MongoDB connected: host name -> ${conn.connection.host}`);
+    app.listen(port, (err)=>{
+        if(err){
+            console.error("Failed to start ",err);
+        }
+        console.log("Server started !!!");
+    })
+} catch (err) {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
+}
+})()
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.use("/auth",authRoutes);
+app.use("/media",instructorMediaRoutes);
+app.use('/instructor/course',instructorCourseRoutes);
+app.use('/student/course',studentCourseRoutes);
+app.use('/student/order',studentOrderRoutes);
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  
+  res.status(500).json({
+    success: false,
+    message: 'Something went wrong',
+  });
 });
