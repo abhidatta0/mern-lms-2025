@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 import {  RequestHandler } from 'express';
-import { InferSelectModel } from "drizzle-orm";
-import { user } from "../config/schema";
 import { getUserById } from "../controllers/auth";
 
 const verifyToken = (token:string, secretKey:string) => {
@@ -38,4 +36,4 @@ const authenticate:RequestHandler = async (req, res, next) => {
   }
 };
 
-module.exports = authenticate;
+export default authenticate;

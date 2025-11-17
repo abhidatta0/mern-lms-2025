@@ -2,11 +2,12 @@ import cors from  'cors';
 import mongoose from 'mongoose';
 import express,{ Request, Response, NextFunction } from 'express';
 import authRoutes from './routes/auth';
+/*
 const instructorMediaRoutes = require('./routes/instructor/media-routes');
 const instructorCourseRoutes = require('./routes/instructor/course-routes');
 const studentCourseRoutes = require('./routes/student/course-routes');
 const studentOrderRoutes = require('./routes/student/order-routes');
-
+*/
 const port = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -35,28 +36,18 @@ app.get('/test', (req, res) => {
 
 app.use(express.json());
 
-(async function(){
-try {
-  console.log("Connecting with mongodb....")
-  const conn = await mongoose.connect(MONGO_URI!);
-  console.log(`MongoDB connected: host name -> ${conn.connection.host}`);
-    app.listen(port, (err)=>{
-        if(err){
-            console.error("Failed to start ",err);
-        }
-        console.log("Server started !!!");
-    })
-} catch (err) {
-  console.error("MongoDB connection error:", err);
-  process.exit(1);
-}
-})()
+app.listen(port, (err)=>{
+    if(err){
+        console.error("Failed to start ",err);
+    }
+    console.log("Server started !!!");
+})
 
 app.use("/auth",authRoutes);
-app.use("/media",instructorMediaRoutes);
-app.use('/instructor/course',instructorCourseRoutes);
-app.use('/student/course',studentCourseRoutes);
-app.use('/student/order',studentOrderRoutes);
+// app.use("/media",instructorMediaRoutes);
+// app.use('/instructor/course',instructorCourseRoutes);
+// app.use('/student/course',studentCourseRoutes);
+// app.use('/student/order',studentOrderRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

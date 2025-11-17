@@ -42,7 +42,6 @@ export const registerUser = async (req: Request, res: Response) => {
         password: hashedPassword,
         is_instructor: false,
       })
-      .returning();
 
     return res.status(201).json({
       success: true,

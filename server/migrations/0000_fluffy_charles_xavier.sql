@@ -1,26 +1,26 @@
 CREATE TYPE "public"."lecture_type" AS ENUM('quiz', 'lesson');--> statement-breakpoint
 CREATE TYPE "public"."payment_method" AS ENUM('razorpay', 'paypal');--> statement-breakpoint
 CREATE TABLE "course_modules" (
-	"id" text PRIMARY KEY NOT NULL,
-	"course_id" text NOT NULL,
-	"module_id" text NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"course_id" serial NOT NULL,
+	"module_id" serial NOT NULL,
 	CONSTRAINT "unique_course_module" UNIQUE("course_id","module_id")
 );
 --> statement-breakpoint
 CREATE TABLE "courses" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar NOT NULL,
 	"description" text NOT NULL,
 	"price" numeric(10, 2) NOT NULL,
 	"is_published" boolean DEFAULT false,
-	"currency_id" text,
-	"instructor_id" text NOT NULL,
+	"currency_id" serial NOT NULL,
+	"instructor_id" serial NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "currency" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar NOT NULL,
 	"code" varchar NOT NULL,
 	CONSTRAINT "currency_name_unique" UNIQUE("name"),
@@ -28,18 +28,18 @@ CREATE TABLE "currency" (
 );
 --> statement-breakpoint
 CREATE TABLE "enrollments" (
-	"course_id" text NOT NULL,
-	"student_id" text NOT NULL,
+	"course_id" serial NOT NULL,
+	"student_id" serial NOT NULL,
 	"enrollment_date" timestamp DEFAULT now(),
 	"completion_date" timestamp,
 	"price" numeric(10, 2),
-	"currency_id" text,
+	"currency_id" serial NOT NULL,
 	CONSTRAINT "enrollments_course_id_student_id_pk" PRIMARY KEY("course_id","student_id")
 );
 --> statement-breakpoint
 CREATE TABLE "lessons" (
-	"id" text PRIMARY KEY NOT NULL,
-	"module_id" text NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"module_id" serial NOT NULL,
 	"name" varchar NOT NULL,
 	"video_url" varchar(500),
 	"public_id" varchar,
@@ -48,24 +48,24 @@ CREATE TABLE "lessons" (
 );
 --> statement-breakpoint
 CREATE TABLE "module_items" (
-	"id" text PRIMARY KEY NOT NULL,
-	"module_id" text NOT NULL,
-	"item_id" text NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"module_id" serial NOT NULL,
+	"item_id" serial NOT NULL,
 	"lecture_type" "lecture_type" NOT NULL,
 	CONSTRAINT "unique_module_item" UNIQUE("module_id","item_id")
 );
 --> statement-breakpoint
 CREATE TABLE "modules" (
-	"id" text PRIMARY KEY NOT NULL,
-	"course_id" text NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"course_id" serial NOT NULL,
 	"name" varchar NOT NULL,
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "orders" (
-	"id" text PRIMARY KEY NOT NULL,
-	"student_id" text NOT NULL,
-	"course_id" text NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
+	"student_id" serial NOT NULL,
+	"course_id" serial NOT NULL,
 	"payment_method" "payment_method" NOT NULL,
 	"payment_status" varchar NOT NULL,
 	"order_date" timestamp DEFAULT now(),
@@ -74,14 +74,14 @@ CREATE TABLE "orders" (
 );
 --> statement-breakpoint
 CREATE TABLE "student_lesson" (
-	"student_id" text NOT NULL,
-	"lesson_id" text NOT NULL,
+	"student_id" serial NOT NULL,
+	"lesson_id" serial NOT NULL,
 	"completed_datetime" timestamp,
 	CONSTRAINT "student_lesson_student_id_lesson_id_pk" PRIMARY KEY("student_id","lesson_id")
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"email" varchar NOT NULL,
 	"password" varchar NOT NULL,
 	"is_instructor" boolean DEFAULT false,

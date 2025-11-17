@@ -1,4 +1,4 @@
-  import { InferSelectModel } from "drizzle-orm";
+import { InferSelectModel } from "drizzle-orm";
 import { user } from '../../config/schema';
 
   declare global{

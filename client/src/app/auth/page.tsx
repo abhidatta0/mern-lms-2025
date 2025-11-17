@@ -28,7 +28,7 @@ const AuthPage = () => {
   }
 
    const checkIfSignUpFormValid = ()=>{
-    return signUpFormData && signUpFormData.userName.trim() != '' && signUpFormData.userEmail.trim()  != '' && signUpFormData.password.trim() != '';
+    return signUpFormData && signUpFormData.userEmail.trim()  != '' && signUpFormData.password.trim() != '';
   }
 
   return (

@@ -5,7 +5,7 @@ export const lecture_type_enum = pgEnum('lecture_type', ['quiz', 'lesson']);
 export const payment_method_enum = pgEnum('payment_method', ['razorpay', 'paypal']);
 
 export const currency = pgTable('currency', {
-  id: text().primaryKey(),
+  id: serial().primaryKey(),
   name: varchar().notNull().unique(),
   code: varchar().notNull().unique(),
 });
@@ -21,13 +21,13 @@ export const user = pgTable('user', {
 export const courses = pgTable(
   'courses',
   {
-    id: text().primaryKey(),
+    id: serial().primaryKey(),
     title: varchar().notNull(),
     description: text().notNull(),
     price: numeric({ precision: 10, scale: 2 }).notNull(),
     is_published: boolean().default(false),
-    currency_id: text().references(() => currency.id),
-    instructor_id: text()
+    currency_id: serial().references(() => currency.id),
+    instructor_id: serial()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     created_at: timestamp().defaultNow(),
@@ -39,8 +39,8 @@ export const courses = pgTable(
 );
 
 export const modules = pgTable('modules', {
-  id: text().primaryKey(),
-  course_id: text()
+  id: serial().primaryKey(),
+  course_id: serial()
     .notNull()
     .references(() => courses.id, { onDelete: 'cascade' }),
   name: varchar().notNull(),
@@ -48,8 +48,8 @@ export const modules = pgTable('modules', {
 });
 
 export const lessons = pgTable('lessons', {
-  id: text().primaryKey(),
-  module_id: text()
+  id: serial().primaryKey(),
+  module_id: serial()
     .notNull()
     .references(() => modules.id, { onDelete: 'cascade' }),
   name: varchar().notNull(),
@@ -62,16 +62,16 @@ export const lessons = pgTable('lessons', {
 export const enrollments = pgTable(
   'enrollments',
   {
-    course_id: text()
+    course_id: serial()
       .notNull()
       .references(() => courses.id, { onDelete: 'cascade' }),
-    student_id: text()
+    student_id: serial()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     enrollment_date: timestamp().defaultNow(),
     completion_date: timestamp(),
     price: numeric({ precision: 10, scale: 2 }),
-    currency_id: text().references(() => currency.id),
+    currency_id: serial().references(() => currency.id),
   },
   (table) => [
     primaryKey({ columns: [table.course_id, table.student_id] }),
@@ -81,11 +81,11 @@ export const enrollments = pgTable(
 export const course_modules = pgTable(
   'course_modules',
   {
-    id: text().primaryKey(),
-    course_id: text()
+    id: serial().primaryKey(),
+    course_id: serial()
       .notNull()
       .references(() => courses.id, { onDelete: 'cascade' }),
-    module_id: text()
+    module_id: serial()
       .notNull()
       .references(() => modules.id, { onDelete: 'cascade' }),
   },
@@ -97,11 +97,11 @@ export const course_modules = pgTable(
 export const module_items = pgTable(
   'module_items',
   {
-    id: text().primaryKey(),
-    module_id: text()
+    id: serial().primaryKey(),
+    module_id: serial()
       .notNull()
       .references(() => modules.id, { onDelete: 'cascade' }),
-    item_id: text().notNull(),
+    item_id: serial().notNull(),
     lecture_type: lecture_type_enum().notNull(),
   },
   (table) => [
@@ -110,11 +110,11 @@ export const module_items = pgTable(
 );
 
 export const orders = pgTable('orders', {
-  id: text().primaryKey(),
-  student_id: text()
+  id: serial().primaryKey(),
+  student_id: serial()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  course_id: text()
+  course_id: serial()
     .notNull()
     .references(() => courses.id, { onDelete: 'cascade' }),
   payment_method: payment_method_enum().notNull(),
@@ -127,10 +127,10 @@ export const orders = pgTable('orders', {
 export const student_lesson = pgTable(
   'student_lesson',
   {
-    student_id: text()
+    student_id: serial()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
-    lesson_id: text()
+    lesson_id: serial()
       .notNull()
       .references(() => lessons.id, { onDelete: 'cascade' }),
     completed_datetime: timestamp(),
