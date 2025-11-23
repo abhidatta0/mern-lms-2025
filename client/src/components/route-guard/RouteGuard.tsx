@@ -13,6 +13,10 @@ const RouteGuard = () => {
     return <Navigate to="/auth" />
   }
 
+  if(authenticated && location.pathname.includes('/auth')){
+    return <Navigate to="/home" replace/>
+  }
+
   return (
     <Outlet />
   )
