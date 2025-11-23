@@ -23,13 +23,13 @@ function App() {
            <Route path="payment-return" Component={PaymentReturn} />
            <Route path="student-courses" Component={MyCoursesList} />
            <Route path="course-progress/:id" Component={CourseProgress} />
+           <Route path="instructor">
+              <Route index Component={InstructorDashboardRoot} />
+              <Route path="create-new-course" Component={AddNewCourse}/>
+              <Route path="edit-course/:courseId" Component={AddNewCourse} />
+            </Route>
         </Route>
         <Route path="auth" Component={AuthPage}/>
-        <Route path="instructor">
-          <Route index Component={InstructorDashboardRoot} />
-          <Route path="create-new-course" Component={AddNewCourse}/>
-          <Route path="edit-course/:courseId" Component={AddNewCourse} />
-        </Route>
       </Route>
 
       <Route path="*" Component={NotFoundPage} />

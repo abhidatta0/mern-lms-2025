@@ -30,6 +30,15 @@ const Header = () => {
       </div>
       <div className="flex items-center space-x-4">
         <div className="flex gap-4 items-center">
+
+           <div
+            onClick={() => navigate("/instructor")}
+            className="flex cursor-pointer items-center gap-3"
+          >
+            <span className="font-extrabold md:text-xl text-[14px]">
+              View as Instructor
+            </span>
+          </div>
           <div
             onClick={() => navigate("/student-courses")}
             className="flex cursor-pointer items-center gap-3"

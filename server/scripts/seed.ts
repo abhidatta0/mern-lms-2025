@@ -8,13 +8,13 @@ async function seedDatabase() {
     // 1. Seed currencies
     console.log('Seeding currencies...');
     const currencyData = [
-      { id: 'USD', name: 'US Dollar', code: 'USD' },
-      { id: 'EUR', name: 'Euro', code: 'EUR' },
-      { id: 'INR', name: 'Indian Rupee', code: 'INR' },
-      { id: 'GBP', name: 'British Pound', code: 'GBP' },
+      {  name: 'US Dollar', code: 'USD' },
+      {  name: 'Euro', code: 'EUR' },
+      {  name: 'Indian Rupee', code: 'INR' },
+      {  name: 'British Pound', code: 'GBP' },
     ];
     
-    await db.insert(currency).values(currencyData).onConflictDoNothing();
+    await db.insert(currency).values(currencyData);
     console.log('✅ Currencies seeded');
     console.log('\n✨ Database seeding completed successfully!');
     process.exit(0);
