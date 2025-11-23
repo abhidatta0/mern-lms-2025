@@ -4,8 +4,8 @@ import type { FormControl, FormData } from "@/components/common-form/types";
 export const signUpFormControls:FormControl[] = [
   {
     name: "userEmail",
-    label: "User Email",
-    placeholder: "Enter your user email",
+    label: "Email",
+    placeholder: "Enter your email",
     type: "email",
     componentType: "input",
   },
@@ -21,8 +21,8 @@ export const signUpFormControls:FormControl[] = [
 export const signInFormControls:FormControl[]  = [
   {
     name: "userEmail",
-    label: "User Email",
-    placeholder: "Enter your user email",
+    label: "Email",
+    placeholder: "Enter your email",
     type: "email",
     componentType: "input",
   },
