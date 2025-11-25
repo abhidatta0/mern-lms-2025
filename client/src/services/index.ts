@@ -72,7 +72,7 @@ export async function editCourseService(id:string,formData:UpdateCoursePayload) 
 }
 
 
-export async function fetchInstructorCourseListService(instructorId: string) {
+export async function fetchInstructorCourseListService(instructorId: number) {
   const { data } = await axiosInstance.get(`/instructor/course/get/list/${instructorId}`);
 
   return data;

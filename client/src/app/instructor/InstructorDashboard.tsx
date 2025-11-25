@@ -8,14 +8,14 @@ import { useUserDetails } from "../auth/useUserDetails";
 const InstructorDashboard = () => {
     const [coursesList, setCoursesList] = useState<InstructorCourse[]>([]);
   
-    const {_id} = useUserDetails();
+    const {id} = useUserDetails();
   
   const fetchAllCourses = useCallback(async  ()=>{
-      const response = await fetchInstructorCourseListService(_id);
+      const response = await fetchInstructorCourseListService(id);
       if(response.success){
       setCoursesList(response.data);
       }
-    },[_id]);
+    },[id]);
   
     useEffect(()=>{
       fetchAllCourses();

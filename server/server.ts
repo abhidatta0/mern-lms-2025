@@ -2,9 +2,9 @@ import cors from  'cors';
 import mongoose from 'mongoose';
 import express,{ Request, Response, NextFunction } from 'express';
 import authRoutes from './routes/auth';
+import instructorCourseRoutes from './routes/instructor/course-routes';
 /*
 const instructorMediaRoutes = require('./routes/instructor/media-routes');
-const instructorCourseRoutes = require('./routes/instructor/course-routes');
 const studentCourseRoutes = require('./routes/student/course-routes');
 const studentOrderRoutes = require('./routes/student/order-routes');
 */
@@ -45,7 +45,7 @@ app.listen(port, (err)=>{
 
 app.use("/auth",authRoutes);
 // app.use("/media",instructorMediaRoutes);
-// app.use('/instructor/course',instructorCourseRoutes);
+app.use('/instructor/course',instructorCourseRoutes);
 // app.use('/student/course',studentCourseRoutes);
 // app.use('/student/order',studentOrderRoutes);
 

@@ -19,12 +19,6 @@ const menuItems = [
       value:'courses',
       component:<InstructorCourses />
     },
-    {
-      icon:LogOut,
-      label:'Logout',
-      value:'logout',
-      component:null,
-    }
 ];
 const InstructorDashboardRoot = () => {
   const [activeTab, setActiveTab] = useState('dashboard');

@@ -1,17 +1,23 @@
-const Course = require('../../models/Course');
+import { RequestHandler } from 'express';
+import { db } from '../../config/database';
+import { courses } from '../../config/schema';
+import { eq } from 'drizzle-orm';
 
-const addNewCourse = async (req, res)=>{
+export const addNewCourse:RequestHandler<{},{},typeof courses.$inferSelect> = async (req, res)=>{
     try{
-     const courseData = req.body;
-     const newlyCreatedCourse = new Course(courseData);
-     const saveCourse = await newlyCreatedCourse.save();
-     if(saveCourse){
+    const courseData = req.body;
+
+    const saveCourse =  await db
+    .insert(courses)
+    .values(courseData).returning();
+    if(saveCourse){
         res.status(201).json({
             success: true,
             message: 'Course created successfully',
             data:saveCourse,
         })
      }
+
     }catch(e){
         console.log(e);
         res.status(500).json({
@@ -21,10 +27,15 @@ const addNewCourse = async (req, res)=>{
     }
 }
 
-const getAllCourses = async (req, res)=>{
+export const getAllCourses:RequestHandler<{instructorId:number}> = async (req, res)=>{
     const {instructorId} = req.params;
     try{
-      const coursesList = await Course.find({instructorId});
+      const coursesList = await db
+      .select()
+      .from(courses)
+      .where((eq(courses.instructor_id, instructorId)));
+
+
       res.status(200).json({
             success: true,
             data:coursesList,
@@ -38,9 +49,13 @@ const getAllCourses = async (req, res)=>{
     }
 }
 
-const getCourseDetailsByID = async (req, res)=>{
+export const getCourseDetailsByID:RequestHandler<{id:number}>  = async (req, res)=>{
     try{
-      const course = await Course.findOne({_id:req.params.id});
+       const course = await db
+      .select()
+      .from(courses)
+      .where((eq(courses.instructor_id, req.params.id)));
+
       if(!course){
         return res.status(404).json({
             success: false,
@@ -49,7 +64,7 @@ const getCourseDetailsByID = async (req, res)=>{
       }
       res.status(200).json({
             success: true,
-            data:course,
+            data:course[0],
         })
     }catch(e){
         console.log(e);
@@ -60,11 +75,12 @@ const getCourseDetailsByID = async (req, res)=>{
     }
 }
 
-const updateCourseByID = async (req, res)=>{
+export const updateCourseByID:RequestHandler<{id:number},{},typeof courses.$inferInsert> = async (req, res)=>{
     try{
         const {id} = req.params;
         const updatedCourseData = req.body;
-        const updatedCourse = await Course.findByIdAndUpdate(id,updatedCourseData,{new: true});
+        const updatedCourse =  await db.update(courses).set(updatedCourseData).where(eq(courses.id, id));
+
         if(!updatedCourse){
         return res.status(404).json({
             success: false,
@@ -84,5 +100,3 @@ const updateCourseByID = async (req, res)=>{
         })
     }
 }
-
-module.exports = {addNewCourse, getAllCourses, getCourseDetailsByID,updateCourseByID};

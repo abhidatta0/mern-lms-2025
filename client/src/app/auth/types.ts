@@ -1,6 +1,7 @@
 export type User = {
-    "_id":string,
-    "userEmail":string,
+    "id":number,
+    "email":string,
     "password":string,
     "is_instructor": boolean,
+    "created_at":string,
 }
