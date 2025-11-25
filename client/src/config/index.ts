@@ -110,13 +110,6 @@ export const courseLandingPageFormControls:FormControl[] = [
     options: languageOptions,
   },
   {
-    name: "subtitle",
-    label: "Subtitle",
-    componentType: "input",
-    type: "text",
-    placeholder: "Enter course subtitle",
-  },
-  {
     name: "description",
     label: "Description",
     componentType: "textarea",
@@ -151,7 +144,6 @@ export const courseLandingInitialFormData = {
   category: "",
   level: "",
   primaryLanguage: "",
-  subtitle: "",
   description: "",
   pricing: "",
   objectives: "",

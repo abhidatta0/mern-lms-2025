@@ -50,12 +50,10 @@ const CourseDetails = () => {
   const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] =
     useState<CourseCurriculumFormData['videoUrl']|null>(null);
 
-  const {_id, } = useUserDetails();
-
   async function fetchDetails() {
     if(id){
         setIsLoading(true);
-        const response = await fetchStudentViewCourseDetailsService(id, user._id);
+        const response = await fetchStudentViewCourseDetailsService(Number(id), user.id);
         if (response.success) { 
           setCourseDetails(response.data);
           if(response.isCoursePurchased){
@@ -92,7 +90,7 @@ const CourseDetails = () => {
 
   const handleCreatePayment = async ()=>{
     const payload:Order = {
-      userId:_id,
+      userId:user.id,
       orderStatus:'pending',
       paymentMethod:'razorpay', // dummy payment !
       paymentStatus:'initiated',
@@ -132,7 +130,6 @@ const CourseDetails = () => {
         <h1 className="text-3xl font-bold mb-4">
           {courseDetails.title}
         </h1>
-        <p className="text-xl mb-4">{courseDetails.subtitle}</p>
         <div className="flex items-center space-x-4 mt-2 text-sm">
           <span>Created By {courseDetails.instructorName}</span>
           <span>Created On {new Date(courseDetails.date).toLocaleDateString()}</span>

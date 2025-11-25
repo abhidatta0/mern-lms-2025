@@ -1,5 +1,5 @@
 export type Order = { 
-  userId: string,
+  userId: number,
   orderStatus: 'pending',
   paymentMethod: string,
   paymentStatus: 'initiated',

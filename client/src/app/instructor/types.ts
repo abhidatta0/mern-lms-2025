@@ -3,7 +3,6 @@ export type CourseLandingFormData = {
     category: string;
     level: string;
     primaryLanguage: string;
-    subtitle: string;
     description: string;
     pricing: string;
     objectives: string;

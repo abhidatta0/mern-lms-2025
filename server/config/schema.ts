@@ -10,6 +10,20 @@ export const currency = pgTable('currency', {
   code: varchar().notNull().unique(),
 });
 
+export const category = pgTable('category', {
+  id: serial().primaryKey(),
+  name: varchar().notNull().unique(),
+});
+
+export const primary_languages = pgTable('primary_languages', {
+  id: serial().primaryKey(),
+  name: varchar().notNull().unique(),
+});
+
+export const course_levels = pgTable('course_levels', {
+  id: serial().primaryKey(),
+  name: varchar().notNull().unique(),
+});
 export const user = pgTable('user', {
   id: serial().primaryKey(),
   email: varchar().notNull().unique(),
@@ -24,12 +38,25 @@ export const courses = pgTable(
     id: serial().primaryKey(),
     title: varchar().notNull(),
     description: text().notNull(),
-    price: numeric({ precision: 10, scale: 2 }).notNull(),
-    is_published: boolean().default(false),
+    pricing: numeric({ precision: 10, scale: 2 }).notNull(),
+    welcomeMessage: text().notNull(),
+    objectives: text().notNull(),
+    image: varchar().notNull(),
+    image_public_id: varchar().notNull(),
+    is_published: boolean().default(true),
     currency_id: serial().references(() => currency.id),
     instructor_id: serial()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
+    category_id: serial()
+      .notNull()
+      .references(() => category.id, { onDelete: 'set null' }),
+    primary_language_id: serial()
+      .notNull()
+      .references(() => primary_languages.id, { onDelete: 'set null' }),
+    course_level_id: serial()
+      .notNull()
+      .references(() => course_levels.id, { onDelete: 'set null' }),
     created_at: timestamp().defaultNow(),
     updated_at: timestamp().defaultNow(),
   },
@@ -161,6 +188,9 @@ export const courseRelations = relations(courses, ({ one, many }) => ({
   modules: many(modules),
   enrollments: many(enrollments),
   orders: many(orders),
+  category: many(category),
+  level: many(course_levels),
+  primaryLanguage: many(primary_languages),
 }));
 
 export const modulesRelations = relations(modules, ({ one, many }) => ({
