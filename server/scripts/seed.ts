@@ -1,5 +1,5 @@
 import { db } from '../config/database';
-import { currency,primary_languages, course_levels  } from '../config/schema';
+import { currency,primary_languages, course_levels, category  } from '../config/schema';
 
 async function seedDatabase() {
   try {
@@ -35,8 +35,22 @@ async function seedDatabase() {
     {  name: "Intermediate" },
     { name: "Advanced" },
   ];
-    await db.insert(primary_languages).values(courseLevelOptions);
+    await db.insert(course_levels).values(courseLevelOptions);
 
+  const courseCategories = [
+  { name: "Web Development" },
+  { name: "Backend Development" },
+  { name: "Data Science" },
+  { name: "Machine Learning" },
+  {  name: "Artificial Intelligence" },
+  {  name: "Cloud Computing" },
+  { name: "Cyber Security" },
+  { name: "Mobile Development" },
+  { name: "Game Development" },
+  {  name: "Software Engineering" },
+  ];
+    await db.insert(category).values(courseCategories);
+   
 
     console.log('✅ Currencies seeded');
     console.log('\n✨ Database seeding completed successfully!');

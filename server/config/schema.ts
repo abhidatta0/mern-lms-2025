@@ -39,7 +39,7 @@ export const courses = pgTable(
     title: varchar().notNull(),
     description: text().notNull(),
     pricing: numeric({ precision: 10, scale: 2 }).notNull(),
-    welcomeMessage: text().notNull(),
+    welcome_message: text().notNull(),
     objectives: text().notNull(),
     image: varchar().notNull(),
     image_public_id: varchar().notNull(),

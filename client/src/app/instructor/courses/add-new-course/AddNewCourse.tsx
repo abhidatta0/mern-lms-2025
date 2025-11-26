@@ -89,13 +89,43 @@ const AddNewCourse = () => {
 
   const handleCreateCourse = async ()=> {
     const payload = {
-      instructorId: user._id,
-      instructorName: user.userName,
-      date: new Date(),
-      ...courseLandingFormData,
-      curriculum: courseCurriculumFormData,
-      isPublished: true,
-    };
+        "date": "2025-11-26T06:37:47.152Z",
+        "title": "React 2025",
+        "category_id": 1,
+        "course_level_id":1,
+        "primaryLanguage": "english",
+        "description": "sadasdsa",
+        "pricing": "500",
+        "objectives": "Be good",
+        "welcome_message": "Hello Students",
+        "currency_id":1,
+        "instructor_id":user.id,
+        "image": "http://res.cloudinary.com/daxgfcpam/image/upload/v1764139056/mern-lms/ijk8jvrplalxzb86nn6q.png",
+        "image_public_id":"mern-lms/vpyy84e3bvmyoo3mvwki",
+        "is_published": true,
+        "curriculum": [
+            {
+                "title": "First",
+                "videoUrl": "http://res.cloudinary.com/daxgfcpam/video/upload/v1764138988/mern-lms/cnelgey4wzkridexuw0u.mp4",
+                "freePreview": true,
+                "public_id": "mern-lms/cnelgey4wzkridexuw0u"
+            },
+            {
+                "title": "Second",
+                "videoUrl": "http://res.cloudinary.com/daxgfcpam/video/upload/v1764138981/mern-lms/wlrcqmrccmqn51mnhirs.mp4",
+                "freePreview": false,
+                "public_id": "mern-lms/wlrcqmrccmqn51mnhirs"
+            }
+        ]
+    }
+    // const payload = {
+    //   instructorId: user._id,
+    //   instructorName: user.userName,
+    //   date: new Date(),
+    //   ...courseLandingFormData,
+    //   curriculum: courseCurriculumFormData,
+    //   isPublished: true,
+    // };
 
     const response = isEditing ? await editCourseService(courseId,payload) : await addNewCourseService(payload);
     if(response.success){
@@ -109,7 +139,7 @@ const AddNewCourse = () => {
     <div className="flex justify-between items-center">
         <h1 className="text-3xl font-extrabold mb-5">{isEditing ? 'Edit' : 'Create a new'} course</h1>
 
-        <Button disabled={!validateFormData()} className="text-sm tracking-wider font-bold px-8" onClick={handleCreateCourse}>{isEditing ? 'Update Course' : 'Submit'}</Button>
+        <Button  className="text-sm tracking-wider font-bold px-8" onClick={handleCreateCourse}>{isEditing ? 'Update Course' : 'Submit'}</Button>
     </div>
     <Card>
         <CardContent>
